@@ -4,7 +4,12 @@ import {useMachine} from "@/hooks/useMachine";
 import {useSetting} from "@/hooks/useSetting";
 import type Machine from "@/library/machine/Machine";
 import {isActiveBrewPhase, type BrewPhase} from "@/library/machine/Machine";
-import {BluetoothPermissionError, RadioUnavailableError, SlotOperationError} from "@/library/machine/errors";
+import {
+    BluetoothPermissionError,
+    NoSavedMachineError,
+    RadioUnavailableError,
+    SlotOperationError
+} from "@/library/machine/errors";
 import {notify} from "@/components/XbrwToast";
 import type {BypassTempEncoding} from "@/library/machine/protocol";
 import type Recipe from "@/library/Recipe";
@@ -105,6 +110,10 @@ export function useBrew(injected?: Machine): Brewer {
         if (e instanceof RadioUnavailableError) return false;
         if (e instanceof SlotOperationError) return false;
         if (e instanceof BluetoothPermissionError) return false;
+        // A scan that listened for every saved machine and heard none of them
+        // is an answer about the room, not a flaky link. A second ten-second
+        // scan of the same room would only make somebody wait twice as long.
+        if (e instanceof NoSavedMachineError) return false;
         const phase = machine.phase;
         // Every other failed phase is left alone, including `rejected`. The
         // transport writes without response, so a write that threw does not

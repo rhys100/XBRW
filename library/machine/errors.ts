@@ -37,3 +37,20 @@ export class SlotOperationError extends Error {
         this.name = "SlotOperationError";
     }
 }
+
+/**
+ * Several machines are saved, a scan listened for all of them, and none answered.
+ *
+ * Its own class because it is a finished answer rather than a flaky one. A
+ * single remembered machine is connected to directly, and connecting to the
+ * J15 fails often enough that retrying is the cure. A scan that heard nothing
+ * for ten seconds has already listened for every saved machine at once, and
+ * asking the same empty room again, as the brew path's relink would, only
+ * doubles the wait before somebody is told.
+ */
+export class NoSavedMachineError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = "NoSavedMachineError";
+    }
+}

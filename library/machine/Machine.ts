@@ -35,7 +35,7 @@ import {
     type MachineInfo,
     type Notification,
 } from "./protocol";
-import type {ConnectionScope, FoundMachine, MachineTransport} from "./Transport";
+import type {ConnectionScope, FoundMachine, MachineTransport, ScanDecider} from "./Transport";
 
 export type SlotSession = {
     restartFromBeginning: boolean;
@@ -659,8 +659,11 @@ export default class Machine {
         }
     }
 
-    scan(): Promise<FoundMachine[]> {
-        return this.transport.scan();
+    scan(decide?: ScanDecider, seconds?: number): Promise<FoundMachine[]> {
+        // Called bare when nothing is asked for, exactly as it always was.
+        return decide === undefined && seconds === undefined
+            ? this.transport.scan()
+            : this.transport.scan(seconds, decide);
     }
 
     /** What the radio last heard the machine call itself. Delegated, not stored:
