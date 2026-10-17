@@ -1,0 +1,147 @@
+name: Android preview APK
+
+# Builds an installable, side-by-side preview APK from any branch of this fork.
+# Fork-only helper. Lives on main so it can be started from the Actions tab.
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch (or tag / SHA) to build
+        required: true
+        default: feat/import-recipe-name
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android-preview-${{ inputs.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build preview APK (${{ inputs.ref }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      PREVIEW_PACKAGE: com.hessius.xbrwplusplus.preview
+    steps:
+      - name: Check out workflow helpers (main)
+        uses: actions/checkout@v5
+        with:
+          path: ci-tools
+          sparse-checkout: .github
+
+      - name: Check out ${{ inputs.ref }}
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.ref }}
+          path: app
+
+      - name: Work out names
+        id: meta
+        working-directory: app
+        run: |
+          sha=$(git rev-parse HEAD)
+          short=$(git rev-parse --short=7 HEAD)
+          safe=$(printf '%s' "${{ inputs.ref }}" | sed -e 's#/#-#g' -e 's#[^A-Za-z0-9._-]#-#g')
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "short=$short" >> "$GITHUB_OUTPUT"
+          echo "safe=$safe" >> "$GITHUB_OUTPUT"
+          echo "tag=preview-$safe" >> "$GITHUB_OUTPUT"
+          echo "apk=XBRWpp-preview-$safe-$short.apk" >> "$GITHUB_OUTPUT"
+          echo "Building ${{ inputs.ref }} at $sha"
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: app/.nvmrc
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: false
+
+      - name: Install dependencies
+        working-directory: app
+        run: npm ci
+
+      - name: Rename app for side-by-side install (CI workspace only)
+        working-directory: app
+        run: |
+          node ../ci-tools/.github/scripts/preview-app-config.js
+          npx expo config --type public --json > /tmp/expo-config.json
+          node -e '
+            const c = require("/tmp/expo-config.json");
+            console.log("Resolved:", c.name, c.android && c.android.package, JSON.stringify(c.scheme));
+            if (c.android.package !== process.env.PREVIEW_PACKAGE) { console.error("android.package was not overridden"); process.exit(1); }
+          '
+
+      - name: Expo prebuild (Android only)
+        working-directory: app
+        env:
+          CI: '1'
+        run: npx expo prebuild --platform android --clean --no-install
+
+      - name: Check generated project
+        working-directory: app/android
+        run: |
+          grep -n "applicationId\|namespace" app/build.gradle
+          grep -q "applicationId '$PREVIEW_PACKAGE'\|applicationId \"$PREVIEW_PACKAGE\"" app/build.gradle || { echo "applicationId is not $PREVIEW_PACKAGE"; exit 1; }
+          echo "--- release signing config:"
+          awk '/buildTypes \{/,/^    \}/' app/build.gradle
+          awk '/buildTypes \{/,/^    \}/' app/build.gradle | grep -A14 'release {' | grep -q 'signingConfig signingConfigs.debug' || { echo "Release is not signed with the debug keystore"; exit 1; }
+          ls -l app/debug.keystore
+          grep -n "scheme\|android:name=\"android.intent.action.VIEW\"" app/src/main/AndroidManifest.xml || true
+          # More heap for R8, and only build the ABI a modern phone needs.
+          sed -i 's/^org.gradle.jvmargs=.*/org.gradle.jvmargs=-Xmx6g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8/' gradle.properties
+          sed -i 's/^reactNativeArchitectures=.*/reactNativeArchitectures=arm64-v8a/' gradle.properties
+          grep -n "jvmargs\|reactNativeArchitectures" gradle.properties
+
+      - name: Gradle assembleRelease
+        working-directory: app/android
+        env:
+          NODE_ENV: production
+        run: ./gradlew assembleRelease --no-daemon --stacktrace
+
+      - name: Collect APK
+        run: |
+          apk=$(ls app/android/app/build/outputs/apk/release/*.apk | head -n1)
+          cp "$apk" "${{ steps.meta.outputs.apk }}"
+          ls -l "${{ steps.meta.outputs.apk }}"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.meta.outputs.apk }}
+          path: ${{ steps.meta.outputs.apk }}
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Publish pre-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.meta.outputs.tag }}
+          SHA: ${{ steps.meta.outputs.sha }}
+          APK: ${{ steps.meta.outputs.apk }}
+          REF: ${{ inputs.ref }}
+        run: |
+          cat > notes.md <<NOTES
+          Unofficial preview build of \`$REF\`.
+
+          - Source branch: \`$REF\`
+          - Commit: $SHA
+          - Package id: \`$PREVIEW_PACKAGE\` (installs alongside the official beta, it does not replace it)
+          - Signed with a debug key. Not from the Play Store and not an official release.
+          - Deep links (\`xbrw://\`, \`xbrecipewriter://\`) will ask which app to open.
+
+          Stay with the machine while brewing; Bluetooth and NFC behaviour is preview-quality.
+          NOTES
+          gh release delete "$TAG" -R "$GITHUB_REPOSITORY" --cleanup-tag -y || true
+          gh release create "$TAG" "$APK" -R "$GITHUB_REPOSITORY" \
+            --target "$SHA" --prerelease \
+            --title "$TAG" --notes-file notes.md
+          echo "Release: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/tag/$TAG" >> "$GITHUB_STEP_SUMMARY"
