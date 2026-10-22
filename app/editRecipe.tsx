@@ -1,3 +1,4 @@
+import {useAppearance} from "@/hooks/useAppearance";
 import {useLocalSearchParams, useNavigation} from "expo-router";
 import router from "@/hooks/steadyRouter";
 import {openEasyModeRecipe} from "@/hooks/useEasyModeSlots";
@@ -32,7 +33,7 @@ import StageTile, {type StageField} from "@/components/StageTile";
 import Stepper from "@/components/Stepper";
 import TeaBanner from "@/components/TeaBanner";
 import {notify} from "@/components/XbrwToast";
-import {palette} from "@/constants/colors";
+
 import {grindTooFine} from "@/constants/copy";
 import {DURATION, EASING, useReducedMotionState} from "@/constants/motion";
 import {pinnedBarPadding, useBottomInset} from "@/hooks/useBottomInset";
@@ -175,6 +176,8 @@ function BrewDeck({
     setOverflowProtection
 }: BrewDeckProps) {
     "use no memo";
+    const appearance = useAppearance();
+    const {palette} = appearance;
 
     // These components draw a model that is mutated in place: `pour.getVolume()`
     // is a method call, not a property read, so the React Compiler cannot see
@@ -204,7 +207,7 @@ function BrewDeck({
                 borderRadius="$5" overflow="hidden">
             <XStack alignItems="baseline" gap="$2" flexWrap="wrap"
                     paddingHorizontal="$4" paddingTop="$4" paddingBottom="$3">
-                <DotMatrixText testID="brew-target" fontSize={22} weight="bold" color={accent}>
+                <DotMatrixText testID="brew-target" fontSize={22} weight="bold" color={appearance.recipe(accent).ink}>
                     {balanceTarget}
                 </DotMatrixText>
                 {/* `dim`, not `muted`: muted is 4.12:1 and the palette says in
@@ -283,7 +286,7 @@ function BrewDeck({
                                style={BANNER_ACTION}
                                onPress={coarsenGrindToMinimum}>
                         <DotMatrixText fontSize={11} weight="bold" letterSpacing={1.6}
-                                       color={accent}>
+                                       color={appearance.recipe(accent).ink}>
                             {`SET TO ${CARD_GRIND_MIN}`}
                         </DotMatrixText>
                     </Pressable>
@@ -428,6 +431,8 @@ function StageProfileCard({
     pours, target, accent, selected, bypassVolume, collapsed, onSelect, onHeight
 }: StageProfileCardProps) {
     "use no memo";
+    const appearance = useAppearance();
+    const {palette} = appearance;
 
     // The profile is drawn into an SVG of a fixed pixel size, so it has to be
     // told how wide the screen is. `16` of screen padding either side and `$3`
@@ -473,6 +478,8 @@ function StagesDeck({
     temperatureUnit, setBypassEnabled, editBypass, showHint, maxStages,
 }: StagesDeckProps) {
     "use no memo";
+    const appearance = useAppearance();
+    const {palette} = appearance;
 
     // These components draw a model that is mutated in place: `pour.getVolume()`
     // is a method call, not a property read, so the React Compiler cannot see
@@ -516,7 +523,7 @@ function StagesDeck({
                                style={BANNER_ACTION}
                                onPress={autoAdjustPourVolumes}>
                         <DotMatrixText fontSize={11} weight="bold" letterSpacing={1.6}
-                                       color={accent}>
+                                       color={appearance.recipe(accent).ink}>
                             AUTO FIX
                         </DotMatrixText>
                     </Pressable>
@@ -583,10 +590,10 @@ function StagesDeck({
                        }}>
                 <XStack alignItems="center" justifyContent="center" gap="$2"
                         marginTop="$2.5" paddingVertical="$3.5" borderRadius="$5"
-                        borderWidth={1} borderColor={addDisabled ? palette.line : accent}
+                        borderWidth={1} borderColor={addDisabled ? palette.line : appearance.recipe(accent).ink}
                         borderStyle="dashed">
                     <DotMatrixText fontSize={11} weight="bold" letterSpacing={1.8}
-                                   color={addDisabled ? palette.dim : accent}>
+                                   color={addDisabled ? palette.dim : appearance.recipe(accent).ink}>
                         + ADD STAGE
                     </DotMatrixText>
                 </XStack>
@@ -688,8 +695,10 @@ type BarButtonProps = {
  * first time this was tried.
  */
 function BarButton({label, accessibilityLabel, enabled, accent, flex, onPress}: BarButtonProps) {
+    const appearance = useAppearance();
+    const {palette} = appearance;
     const fill = enabled
-        ? (accent ?? palette.raised)
+        ? (accent === undefined ? palette.raised : appearance.recipe(accent).fill)
         : palette.none;
 
     return (
@@ -702,10 +711,10 @@ function BarButton({label, accessibilityLabel, enabled, accent, flex, onPress}: 
                     borderWidth={1}
                     // The accent button's own edge, so it reads as one solid
                     // block rather than a fill inside a grey ring.
-                    borderColor={enabled && accent !== undefined ? accent : palette.line}>
+                    borderColor={enabled && accent !== undefined ? fill : palette.line}>
                 <DotMatrixText fontSize={12} weight="bold" letterSpacing={2}
                                color={enabled
-                                   ? (accent !== undefined ? palette.base : palette.text)
+                                   ? (accent !== undefined ? appearance.onFill(fill).text : palette.text)
                                    : palette.muted}>
                     {label}
                 </DotMatrixText>
@@ -722,6 +731,8 @@ function ActionBar({
     accent, canBrewAtAll, canBrew, quickEditOpen, onBrew, onQuickEdit, canWrite, canSave,
     onWrite, onSave, onHeight
 }: ActionBarProps) {
+    const appearance = useAppearance();
+    const {palette} = appearance;
     const bottomInset = useBottomInset();
 
     return (
@@ -779,6 +790,8 @@ function QuickEditLayer({
     open, recipe, adjustments, accent, temperatureUnit, actionBarHeight, onChange,
     onSaveDose, onClose
 }: QuickEditLayerProps) {
+    const appearance = useAppearance();
+    const {palette} = appearance;
     const {reduced, resolved} = useReducedMotionState();
     if (!open) return null;
 
@@ -857,6 +870,8 @@ export default function EditRecipe(
     {historyStore}: {historyStore?: RecipeRatingStore & BeanProfileStore} = {}
 ) {
     "use no memo";
+    const appearance = useAppearance();
+    const {palette} = appearance;
 
     // The screen owns a `Recipe` that every edit mutates in place, and it
     // publishes those edits by bumping a counter rather than by cloning. The
