@@ -9,10 +9,16 @@ import SettingsScreen from "@/app/settings";
 import {SUPPORT_TITLE} from "@/components/SupportTile";
 import {palette} from "@/constants/colors";
 import Recipe from "@/library/Recipe";
+import {newBag, type CoffeeBag} from "@/library/coffeeBag";
+import {feedKey, serialiseFeedOptOut} from "@/library/roasterFeed";
+import {readCatalogue} from "@/library/roasterCatalogue";
+import {parseSubscriptions, serialiseSubscriptions} from "@/library/roasterSubscription";
+import {syncDue} from "@/library/roasterSync";
 import {DEFAULTS, NOT_IN_BACKUP, Settings, type SettingKey, type SettingsStorage} from "@/library/Settings";
 import {
     renderWithProviders, SHEET_PRESS_TIMEOUT, THREE_BUTTON_METRICS
 } from "@/test-utils/render";
+import {FEED_URL, feedBody} from "@/test-utils/roasterFeed";
 
 /**
  * The rendered text of a `toJSON()` tree, in document order.
@@ -91,6 +97,15 @@ const mockBrewStore = {
     restore: jest.fn(() => 0)
 };
 
+const mockBagStore = {
+    all: jest.fn(() => []),
+    restore: jest.fn(() => 0)
+};
+jest.mock("@/library/CoffeeBagDatabase", () => ({
+    ...jest.requireActual("@/library/CoffeeBagDatabase"),
+    sharedBagDatabase: () => mockBagStore
+}));
+
 jest.mock("@/hooks/useBrewHistory", () => ({
     sharedBrewDatabase: () => mockBrewStore
 }));
@@ -153,6 +168,8 @@ function backupOf(
                 settings,
                 skipped: 0,
                 skippedBrews,
+                bags: [] as CoffeeBag[],
+                skippedBags: 0,
                 appVersion: "2.6.0",
                 exportedAt: "2026-08-26T21:00:00.000Z"
             }
@@ -217,6 +234,7 @@ describe("SettingsScreen", () => {
         mockSignOut.mockResolvedValue(undefined);
         mockBrewStore.all.mockReturnValue([]);
         mockBrewStore.restore.mockReturnValue(0);
+        mockBagStore.restore.mockReturnValue(0);
     });
 
     it("groups app brew preferences separately and preserves their settings", async () => {
@@ -322,6 +340,7 @@ describe("SettingsScreen", () => {
             .props.accessibilityState.checked).toBe(true);
         expect(screen.getByLabelText("Recipe card photos").props.accessibilityState.checked).toBe(false);
         expect(screen.getByLabelText("Shelf photo previews").props.accessibilityState.checked).toBe(true);
+        expect(screen.getByText("Show coffee photos in your own shelves, tag shelves and eligible auto shelves.")).toBeTruthy();
     });
 
     it("changes each picture surface independently", async () => {
@@ -402,6 +421,33 @@ describe("SettingsScreen", () => {
         expect(screen.getByText(/card always stores/i)).toBeTruthy();
     });
 
+    it("keeps roaster feeds reachable before the first subscription", async () => {
+        await renderWithProviders(<SettingsScreen settings={new Settings(memoryStorage())}/>);
+        await fireEvent.press(screen.getByRole("button", {
+            name: "Roaster feeds, Manage subscriptions and declined offers."
+        }));
+        expect(mockPush).toHaveBeenCalledWith("/subscriptions");
+    });
+
+    it("shows roaster subscriptions once there is a subscription", async () => {
+        const settings = new Settings(memoryStorage());
+        settings.set("roasterSubscriptions", serialiseSubscriptions([{
+            feed: "https://roaster.example/feed.json", roaster: "Example Roasters",
+            lastSync: 0, lastAttempt: 0, paused: false
+        }]));
+        await renderWithProviders(<SettingsScreen settings={settings}/>);
+        expect(screen.getByText("Roaster feeds")).toBeTruthy();
+        expect(screen.getByText("Manage subscriptions and declined offers.")).toBeTruthy();
+    });
+
+    it("shows roaster subscriptions when only a don't-ask-again is left to undo", async () => {
+        const settings = new Settings(memoryStorage());
+        settings.set("roasterFeedOptOut", serialiseFeedOptOut([feedKey("https://roaster.example/feed.json") ?? ""]));
+        await renderWithProviders(<SettingsScreen settings={settings}/>);
+        expect(screen.getByText("Roaster feeds")).toBeTruthy();
+        expect(screen.getByText("Manage subscriptions and declined offers.")).toBeTruthy();
+    });
+
     it("offers backup and restore", async () => {
         await renderWithProviders(<SettingsScreen settings={new Settings(memoryStorage())}/>);
 
@@ -452,7 +498,8 @@ describe("SettingsScreen", () => {
             {name: "Back up my recipes, Writes a file and hands it to the share sheet."}));
 
         expect(mockExportBackup).toHaveBeenCalledWith(
-            mockLibraryRecipes, expect.any(Object), expect.any(String), expect.any(Array)
+            mockLibraryRecipes, expect.any(Object), expect.any(String), expect.any(Array),
+            expect.any(Array)
         );
 
         // Asserted against DEFAULTS rather than a list written out here, because
@@ -698,7 +745,7 @@ describe("SettingsScreen", () => {
 
         expect(mockExportBackup).toHaveBeenCalledWith(expect.anything(),
             expect.objectContaining({showRecipeAvatars: false}),
-            expect.any(String), expect.any(Array));
+            expect.any(String), expect.any(Array), expect.any(Array));
     });
 
     it("reports a backup that could not be shared", async () => {
@@ -772,7 +819,7 @@ describe("SettingsScreen", () => {
         await fireEvent.press(screen.getByRole("button", {name: /back up my recipes/i}));
         expect(mockExportBackup).toHaveBeenCalledWith(expect.anything(),
             expect.objectContaining({brewHistorySort: "rating", brewHistorySortDirection: "asc"}),
-            expect.any(String), expect.any(Array));
+            expect.any(String), expect.any(Array), expect.any(Array));
     });
 
     it("restores a library sorted by rating", async () => {
@@ -899,6 +946,98 @@ describe("SettingsScreen", () => {
         expect(mockBrewStore.restore).toHaveBeenCalledWith([{id: "b1"}, {id: "b2"}]);
         expect(mockNotify).toHaveBeenCalledWith(expect.objectContaining({
             tone: "success", message: "1 recipe and 2 brews restored"
+        }));
+    });
+
+    it("restores and reports missing bags when all recipes are already present", async () => {
+        mockLibraryRecipes = [recipeNamed("A", "u1")];
+        const picked = backupOf(mockLibraryRecipes);
+        picked.result.payload.bags.push(newBag("u1", {sizeGrams: 250}));
+        mockPickBackup.mockResolvedValue(picked);
+        mockApplyRestore.mockReturnValue({status: "restored", added: 0});
+        mockBagStore.restore.mockReturnValue(1);
+        await renderWithProviders(<SettingsScreen settings={new Settings(memoryStorage())}/>);
+
+        await fireEvent.press(screen.getByRole("button",
+            {name: "Restore from a backup, Adds anything your library does not already have."}));
+        await settleSheet();
+        await fireEvent.press(screen.getByRole("button", {name: /add to my library/i}));
+
+        expect(mockBagStore.restore).toHaveBeenCalledWith(picked.result.payload.bags, new Set(["u1"]));
+        expect(mockNotify).toHaveBeenCalledWith(expect.objectContaining({
+            tone: "success", message: "1 bag restored"
+        }));
+    });
+
+    it("reports unreadable bags even when only settings were restored", async () => {
+        mockLibraryRecipes = [recipeNamed("A", "u1")];
+        const picked = backupOf(mockLibraryRecipes);
+        picked.result.payload.skippedBags = 1;
+        mockPickBackup.mockResolvedValue(picked);
+        mockApplyRestore.mockReturnValue({status: "restored", added: 0});
+        await renderWithProviders(<SettingsScreen settings={new Settings(memoryStorage())}/>);
+
+        await fireEvent.press(screen.getByRole("button",
+            {name: "Restore from a backup, Adds anything your library does not already have."}));
+        await settleSheet();
+        await fireEvent(screen.getByLabelText(/settings from this backup/i), "checkedChange", true);
+        await fireEvent.press(screen.getByRole("button", {name: /take the settings/i}));
+
+        expect(mockNotify).toHaveBeenCalledWith(expect.objectContaining({
+            tone: "error", message: "One bag in that backup could not be read."
+        }));
+    });
+
+    it("repopulates a restored catalogue immediately without resuming paused subscriptions", async () => {
+        const settings = new Settings(memoryStorage());
+        const stamp = Date.now();
+        const subscriptions = [
+            {feed: FEED_URL, roaster: "Example Roasters", lastSync: stamp, lastAttempt: stamp,
+                paused: false, pinnedAt: stamp - 1},
+            {feed: "https://paused.example/feed.json", roaster: "Paused Roasters",
+                lastSync: stamp, lastAttempt: stamp, paused: true}
+        ];
+        mockPickBackup.mockResolvedValue(backupOf([], {
+            roasterSubscriptions: serialiseSubscriptions(subscriptions)
+        }));
+        mockApplyRestore.mockReturnValue({status: "restored", added: 0});
+        await renderWithProviders(<SettingsScreen settings={settings}/>);
+
+        await fireEvent.press(screen.getByRole("button",
+            {name: "Restore from a backup, Adds anything your library does not already have."}));
+        await settleSheet();
+        await fireEvent(screen.getByLabelText(/settings from this backup/i), "checkedChange", true);
+        await fireEvent.press(screen.getByRole("button", {name: /take the settings/i}));
+
+        expect(parseSubscriptions(settings.get("roasterSubscriptions"))).toEqual(
+            subscriptions.map((sub) => ({...sub, lastSync: 0, lastAttempt: 0})));
+        expect(readCatalogue(settings, FEED_URL)).toBeNull();
+        const fetchBody = jest.fn(async () => feedBody([{id: "restored"}]));
+        await act(async () => { await syncDue({settings, fetchBody, now: () => stamp}); });
+        expect(fetchBody).toHaveBeenCalledTimes(1);
+        expect(fetchBody).toHaveBeenCalledWith(FEED_URL, undefined);
+        expect(readCatalogue(settings, FEED_URL)?.feed.coffees.map((coffee) => coffee.id))
+            .toEqual(["restored"]);
+        expect(parseSubscriptions(settings.get("roasterSubscriptions"))
+            .find((sub) => sub.feed === "https://paused.example/feed.json")?.paused).toBe(true);
+    });
+
+    it("reports a bag-store failure without hiding the restored recipes", async () => {
+        mockPickBackup.mockResolvedValue(backupOf([recipeNamed("A", "u1")]));
+        mockApplyRestore.mockReturnValue({status: "restored", added: 1});
+        mockBagStore.restore.mockImplementationOnce(() => { throw new Error("Bag table is unavailable"); });
+        await renderWithProviders(<SettingsScreen settings={new Settings(memoryStorage())}/>);
+
+        await fireEvent.press(screen.getByRole("button",
+            {name: "Restore from a backup, Adds anything your library does not already have."}));
+        await settleSheet();
+        await fireEvent.press(screen.getByRole("button", {name: /add to my library/i}));
+
+        expect(mockNotify).toHaveBeenCalledWith(expect.objectContaining({
+            tone: "success", message: "1 recipe restored"
+        }));
+        expect(mockNotify).toHaveBeenCalledWith(expect.objectContaining({
+            tone: "error", message: "Bags could not be restored."
         }));
     });
 
@@ -1356,6 +1495,32 @@ describe("SettingsScreen", () => {
                 {name: "Send brews to Beanconqueror"}));
 
             expect(settings.get("beanconquerorHandoff")).toBe(true);
+        });
+
+        it("tracks bags in Beanconqueror by default once brews go there", async () => {
+            const settings = new Settings(memoryStorage());
+            settings.set("labsUnlocked", true);
+
+            await renderWithProviders(<SettingsScreen settings={settings}/>);
+            expect(screen.getByRole("radio", {name: "XBRW++", checked: true})).toBeTruthy();
+
+            await fireEvent.press(screen.getByRole("switch",
+                {name: "Send brews to Beanconqueror"}));
+            expect(screen.getByRole("radio", {name: "Beanconqueror", checked: true})).toBeTruthy();
+            // Still following the switch, not yet a choice of its own.
+            expect(settings.get("bagTracker")).toBe("auto");
+        });
+
+        it("keeps an explicit bag tracker choice", async () => {
+            const settings = new Settings(memoryStorage());
+            settings.set("labsUnlocked", true);
+            settings.set("beanconquerorHandoff", true);
+
+            await renderWithProviders(<SettingsScreen settings={settings}/>);
+            await fireEvent.press(screen.getByRole("radio", {name: "XBRW++"}));
+
+            expect(settings.get("bagTracker")).toBe("xbrw");
+            expect(screen.getByRole("radio", {name: "XBRW++", checked: true})).toBeTruthy();
         });
 
         it("closes Labs from inside it, and leaves the rest of settings alone", async () => {

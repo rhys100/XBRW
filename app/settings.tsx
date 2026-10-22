@@ -31,6 +31,12 @@ import {useScrollEndPadding} from "@/hooks/useBottomInset";
 import {type BackupPayload} from "@/library/backup";
 import type {BrewRecord} from "@/library/brew/BrewRecord";
 import {RATING_PROMPT_WINDOW_MS} from "@/library/brew/ratingPrompt";
+import {sharedBagDatabase} from "@/library/CoffeeBagDatabase";
+import {
+    isBagTrackerSetting,
+    resolveBagTracker,
+    type CoffeeBag
+} from "@/library/coffeeBag";
 import type {BackupExcluded, Settings, SettingKey} from "@/library/Settings";
 import {isMachineModel} from "@/library/machine/machineModel";
 import {isSortAxis, isSortDirection} from "@/library/librarySort";
@@ -79,16 +85,29 @@ function brewHistory(): BrewRecord[] {
 }
 
 /**
+ * Every bag, for the backup. Same reasoning as `brewHistory`: a bag table that
+ * will not read is not worth losing the recipes' backup over.
+ */
+function bagHistory(): CoffeeBag[] {
+    try {
+        return sharedBagDatabase().all();
+    } catch {
+        return [];
+    }
+}
+
+/**
  * What a restore did, in one sentence.
  *
  * Both halves are named when both happened, because they land in different
  * places: a user who sees only "12 recipes restored" has no way to tell whether
  * their history came back with them.
  */
-function restoredMessage(recipes: number, brews: number): string {
+function restoredMessage(recipes: number, brews: number, bags: number): string {
     const parts: string[] = [];
     if (recipes > 0) parts.push(recipes === 1 ? "1 recipe" : `${recipes} recipes`);
     if (brews > 0) parts.push(brews === 1 ? "1 brew" : `${brews} brews`);
+    if (bags > 0) parts.push(bags === 1 ? "1 bag" : `${bags} bags`);
     if (parts.length === 0) return "0 recipes restored";
     return `${parts.join(" and ")} restored`;
 }
@@ -115,6 +134,7 @@ export default function SettingsScreen({settings}: Props) {
     const [labsUnlocked, setLabsUnlocked] = useSetting("labsUnlocked", settings);
     const [beanconquerorHandoff, setBeanconquerorHandoff] =
         useSetting("beanconquerorHandoff", settings);
+    const [bagTracker, setBagTracker] = useSetting("bagTracker", settings);
     const cloud = useCloudSession();
 
     async function signOutOfCloud() {
@@ -261,7 +281,7 @@ export default function SettingsScreen({settings}: Props) {
             return;
         }
         const outcome = await exportBackup(
-            everything, settingsSnapshot(), VERSION, brewHistory()
+            everything, settingsSnapshot(), VERSION, brewHistory(), bagHistory()
         );
         if (!outcome.ok) notify({tone: "error", message: outcome.reason});
     }
@@ -425,14 +445,27 @@ export default function SettingsScreen({settings}: Props) {
             brews = 0;
         }
 
-        // A restore that took only the settings did happen, and reporting it as
-        // "0 recipes restored" reads as a failure the app is being coy about.
-        if (outcome.added === 0 && brews === 0 && choice.includeSettings) {
-            notify({tone: "success", message: "Settings restored"});
-            return;
+        // After the brews, which are what a bag's grams left are counted
+        // from, and only for recipes now in the library.
+        let bags = 0;
+        let bagRestoreFailed = false;
+        try {
+            const known = new Set(library.allRecipes().map((recipe) => recipe.uuid));
+            bags = sharedBagDatabase().restore(payload.bags, known);
+        } catch {
+            bagRestoreFailed = true;
         }
 
-        notify({tone: "success", message: restoredMessage(outcome.added, brews)});
+        // A restore that took only the settings did happen, and reporting it as
+        // "0 recipes restored" reads as a failure the app is being coy about.
+        const settingsOnly = outcome.added === 0 && brews === 0 && bags === 0 && choice.includeSettings;
+        notify({
+            tone: "success",
+            message: settingsOnly ? "Settings restored" : restoredMessage(outcome.added, brews, bags)
+        });
+        if (bagRestoreFailed) {
+            notify({tone: "error", message: "Bags could not be restored."});
+        }
 
         // Said out loud, and after the good news rather than instead of it. A
         // history that came back short is not a failed restore, but a user who
@@ -443,6 +476,14 @@ export default function SettingsScreen({settings}: Props) {
                 message: payload.skippedBrews === 1
                     ? "One brew in that backup could not be read."
                     : `${payload.skippedBrews} brews in that backup could not be read.`
+            });
+        }
+        if (payload.skippedBags > 0) {
+            notify({
+                tone: "error",
+                message: payload.skippedBags === 1
+                    ? "One bag in that backup could not be read."
+                    : `${payload.skippedBags} bags in that backup could not be read.`
             });
         }
     }
@@ -544,7 +585,7 @@ export default function SettingsScreen({settings}: Props) {
                         onChange={setInvertAutoShelves}/>
                     <SettingsToggleRow
                         label="Recipe card photos"
-                        description="Show coffee or pod photos on recipe cards."
+                        description="Show coffee or pod photos on recipe cards and Ready to brew."
                         value={showRecipeCardPhotos}
                         onChange={setShowRecipeCardPhotos}/>
                     <SettingsToggleRow
@@ -655,13 +696,28 @@ export default function SettingsScreen({settings}: Props) {
                         label="Send brews to Beanconqueror"
                         description="Needs a version of Beanconqueror that can read the link. Older ones will say they do not recognise it."
                         value={beanconquerorHandoff} onChange={setBeanconquerorHandoff}/>
+                    {/* Beside the handoff because it is the same question seen
+                        from the bag's side: Beanconqueror subtracts every brew
+                        it is handed, so only one app may count a bag. Shows the
+                        resolved choice; picking one stores it explicitly, and
+                        until then it follows the handoff switch above. */}
+                    <SettingsChoiceRow
+                        label="Track bags in"
+                        description="The app that counts down what is left in a bag. Beanconqueror already does this for the brews it receives, so pick one and the two never disagree."
+                        value={resolveBagTracker(bagTracker, beanconquerorHandoff)}
+                        options={[
+                            {value: "xbrw", label: "XBRW++"},
+                            {value: "beanconqueror", label: "Beanconqueror"}
+                        ]}
+                        onChange={(next) => {
+                            if (isBagTrackerSetting(next)) setBagTracker(next);
+                        }}/>
                     <SettingsActionRow label="Hide Labs"
                                        detail="Anything you switched on here stays on."
                                        onPress={() => setLabsUnlocked(false)}/>
                 </SettingsSection>
                 <CardReadDiagnostic settings={settings}/>
                 </>}
-
                 <SettingsSection>
                     <SettingsActionRow label="About XBRW++"
                                        detail={`Version ${VERSION}`}

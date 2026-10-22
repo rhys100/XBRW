@@ -99,8 +99,27 @@ import {asTemperatureUnit, type TemperatureUnit} from "@/library/units";
 import {tagKey} from "@/library/tagKey";
 import {shareBlockReason} from "@/library/shareLink";
 import {type Settings} from "@/library/Settings";
+import {dayOf, resolveBagTracker} from "@/library/coffeeBag";
+import {
+    brewEmphasised,
+    dismissedToday,
+    moreReadyLine,
+    readyBagLine,
+    readyFreshnessLine,
+    readyName,
+    readyToBrew,
+    runningLowLine
+} from "@/library/readyToBrew";
+import ReadyToBrewCard from "@/components/ReadyToBrewCard";
+import {openLink} from "@/components/openLink";
+import {freshnessOf, type Freshness} from "@/library/restPeak";
+import {useNow} from "@/hooks/useNow";
+import type {StoredBagReading} from "@/library/CoffeeBagDatabase";
 import {UNCLIPPED_LIST} from "@/constants/lists";
 import {STABLE_HOST} from "@/constants/views";
+
+/** No bags to draw, one object so a render does not mint a new empty map. */
+const NO_BAGS: Readonly<Record<string, StoredBagReading>> = {};
 
 /**
  * How long one import link stays claimed after it is acted on.
@@ -316,6 +335,32 @@ export default function HomeScreen({db, beanStore, settings}: Props) {
     const [deletingShelf, setDeletingShelf] = useState<string | null>(null);
     const [onlySelected, setOnlySelected] = useState(false);
     const [showCoffeeMarker] = useSetting("showCoffeeMarker", settings);
+    const [bagTrackerSetting] = useSetting("bagTracker", settings);
+    const [beanconquerorHandoff] = useSetting("beanconquerorHandoff", settings);
+    // Grams left are this app's estimate only while this app is the tracker.
+    // With Beanconqueror counting the bag, a badge here would be a second,
+    // drifting answer, so the cards draw none.
+    const bagTracker = resolveBagTracker(bagTrackerSetting, beanconquerorHandoff);
+    const shownBags = bagTracker === "xbrw" ? library.bags : NO_BAGS;
+    // Freshness is the roast day's, not a count, so it shows in both modes.
+    const now = useNow();
+    const bagFreshness: Record<string, Freshness> = {};
+    for (const [uuid, stored] of Object.entries(library.bags)) {
+        const reading = freshnessOf(stored.bag, now);
+        if (reading !== null) bagFreshness[uuid] = reading.state;
+    }
+    // The "Ready to brew" card: the one open bag worth brewing now. Nothing
+    // at all without an open bag, and nothing for the rest of a day it was
+    // closed on. `readyShown` is the good candidate "+2 more ready" stepped
+    // to, discarded at render once it is no longer a good candidate.
+    const [readyDismissedOn, setReadyDismissedOn] = useSetting("readyToBrewDismissedOn", settings);
+    const [readyShown, setReadyShown] = useState<string | null>(null);
+    const ready = dismissedToday(readyDismissedOn, dayOf(now))
+        ? null
+        : readyToBrew(library.bagRecipes, library.bags, library.evidence, bagTracker, now);
+    const readyEntry = ready === null ? null
+        : ready.good.find((entry) => entry.recipe.uuid === readyShown) ?? ready.entries[0];
+
     const [dottedProfile] = useSetting("dotMatrixProfile", settings);
     const [showRecipeCardPhotos] = useSetting("showRecipeCardPhotos", settings);
     const [showShelfPhotoPreviews] = useSetting("showShelfPhotoPreviews", settings);
@@ -1371,6 +1416,12 @@ export default function HomeScreen({db, beanStore, settings}: Props) {
     // is settling, and what is on screen is the honest answer.
     const openShelf = shelves.find((shelf) => shelf.id === libraryQuery.openShelfId);
 
+    // The "Ready to brew" card. Not while picking, editing or standing in a
+    // shelf, where the screen is about something else.
+    const readyCard = ready === null || readyEntry === null || picker.active || inShelfRoom
+        || editing || wholeLibraryEmpty
+        ? null : {entry: readyEntry, good: ready.good, low: ready.low};
+
     return (
         <>
             {/* The NFC ceremony is a modal moment, and an absolutely positioned
@@ -1524,6 +1575,33 @@ export default function HomeScreen({db, beanStore, settings}: Props) {
                         }/>
                 )}
 
+                {readyCard !== null && (
+                    <Collapsible open={!collapsed}>
+                        <ReadyToBrewCard
+                            item={readyCard.entry.recipe}
+                            name={readyName(readyCard.entry.recipe)}
+                            accent={resolveAccent(readyCard.entry.recipe)}
+                            imageUri={showRecipeCardPhotos ? readyCard.entry.recipe.imageURL : undefined}
+                            freshnessLine={readyFreshnessLine(readyCard.entry.freshness)}
+                            bagLine={readyBagLine(readyCard.entry.reading)}
+                            emphasised={brewEmphasised(readyCard.entry)}
+                            onOpen={openRecipe}
+                            onBrew={remembered !== "" ? openBrew : undefined}
+                            low={readyCard.low === null ? null : {
+                                line: runningLowLine(readyCard.low.name),
+                                reorderUrl: readyCard.low.reorderUrl
+                            }}
+                            onReorder={openLink}
+                            moreLine={readyCard.good.includes(readyCard.entry)
+                                ? moreReadyLine(readyCard.good.length - 1) : null}
+                            onMore={() => {
+                                const {good, entry} = readyCard;
+                                setReadyShown(good[(good.indexOf(entry) + 1) % good.length].recipe.uuid);
+                            }}
+                            onDismiss={() => setReadyDismissedOn(dayOf(now))}/>
+                    </Collapsible>
+                )}
+
                 {wholeLibraryEmpty ? (
                     <EmptyLibrary/>
                 ) : inShelfRoom && !picker.active ? (
@@ -1541,6 +1619,8 @@ export default function HomeScreen({db, beanStore, settings}: Props) {
                         onScroll={onScroll}
                         actionsFor={roomActionsFor}
                         evidence={library.evidence}
+                        bags={shownBags}
+                        freshness={bagFreshness}
                         showCoffeeMarker={showCoffeeMarker}
                         dottedProfile={dottedProfile}
                         showPicture={showRecipeCardPhotos}
@@ -1621,6 +1701,8 @@ export default function HomeScreen({db, beanStore, settings}: Props) {
                                 dottedProfile={dottedProfile}
                                 showPicture={showRecipeCardPhotos}
                                 evidence={library.evidence[item.recipe.uuid]}
+                                bag={shownBags[item.recipe.uuid]}
+                                freshness={bagFreshness[item.recipe.uuid]}
                                 slotMarker={slotMarkers(slotRecord, item.recipe)}
                                 onEasyMode={remembered !== ""
                                     ? () => openEasyModeRecipe(item.recipe, remembered) : undefined}

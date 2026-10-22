@@ -2,6 +2,9 @@ import React from "react";
 import {screen, fireEvent} from "@testing-library/react-native";
 
 import RestoreSheet from "@/components/RestoreSheet";
+import {palette} from "@/constants/colors";
+import {unobservedBrew} from "@/library/brew/BrewRecord";
+import {newBag} from "@/library/coffeeBag";
 import Recipe from "@/library/Recipe";
 import {renderWithProviders} from "@/test-utils/render";
 
@@ -18,6 +21,8 @@ const PAYLOAD = {
     settings: {temperatureUnit: "F"},
     skipped: 0,
     skippedBrews: 0,
+    bags: [],
+    skippedBags: 0,
     appVersion: "2.6.0",
     exportedAt: "2026-08-26T21:00:00.000Z"
 };
@@ -133,6 +138,25 @@ describe("RestoreSheet", () => {
 
         await fireEvent.press(add);
         expect(onRestore).not.toHaveBeenCalled();
+    });
+
+    it.each(["bags", "brews"] as const)("merges %s without requiring new recipes or taking settings", async (kind) => {
+        const onRestore = jest.fn();
+        await renderWithProviders(
+            <RestoreSheet open payload={{
+                ...PAYLOAD,
+                bags: kind === "bags" ? [newBag("u1", {sizeGrams: 250})] : [],
+                brews: kind === "brews" ? [unobservedBrew({
+                    recipeUuid: "u1", recipeName: "A", accent: palette.text, rating: 4
+                })] : []
+            }} existing={PAYLOAD.recipes} onCancel={() => {}} onRestore={onRestore}/>
+        );
+
+        const add = screen.getByRole("button", {name: /add.*librar/i});
+        expect(add.props.accessibilityState.disabled).toBe(false);
+        await fireEvent.press(add);
+
+        expect(onRestore).toHaveBeenCalledWith({replace: false, includeSettings: false});
     });
 
     it("still offers the settings when every recipe is already present", async () => {

@@ -14,6 +14,9 @@ import {canWriteToCard} from "@/library/cardLimits";
 import type {RecipeEvidence} from "@/library/libraryQuery";
 import type {SlotMarkerValue} from "@/library/slots/slotModel";
 import {evidenceLine, isSet, spokenEvidence} from "@/library/recipeEvidence";
+import {bagBadge, readBag, spokenBag} from "@/library/coffeeBag";
+import {freshnessBadge, spokenFreshness, type Freshness} from "@/library/restPeak";
+import type {StoredBagReading} from "@/library/CoffeeBagDatabase";
 import {onAccent} from "@/constants/colors";
 
 /**
@@ -89,6 +92,8 @@ export {TILE_PHOTO_SIZE} from "@/library/recipePictureLayout";
 
 type MetadataProps = {
     evidence: string | null;
+    bag?: string;
+    freshness?: string;
     slot?: string;
     marker?: string;
     favourite: boolean;
@@ -99,7 +104,7 @@ type MetadataProps = {
 };
 
 function RecipeTileMetadata({
-    evidence, slot, marker, favourite, editing, uuid, measuring = false, onActions
+    evidence, bag, freshness, slot, marker, favourite, editing, uuid, measuring = false, onActions
 }: MetadataProps) {
     const id = (name: string) => measuring ? undefined : `recipe-tile-${name}`;
     return (
@@ -119,6 +124,10 @@ function RecipeTileMetadata({
                 <DotMatrixText testID={measuring ? undefined : "slot-marker"} color={onAccent.marker}
                     fontSize={11} weight="extrabold" letterSpacing={1} numberOfLines={1}>{slot}</DotMatrixText>
             </View>}
+            {bag && <DotMatrixText testID={id("bag")} fontSize={10} weight="bold"
+                letterSpacing={1.1} numberOfLines={1} color={onAccent.marker}>{bag}</DotMatrixText>}
+            {freshness && <DotMatrixText testID={id("freshness")} fontSize={10} weight="bold"
+                letterSpacing={1.1} numberOfLines={1} color={onAccent.marker}>{freshness}</DotMatrixText>}
             {favourite && (measuring ? <View style={{width: 12, height: 12}}/>
                 : <DotIcon testID={id("favourite")} name="favourite" size={12} color={onAccent.marker}/>)}
             {marker && <DotMatrixText fontSize={11} weight="bold" letterSpacing={1.4}
@@ -155,6 +164,10 @@ type Props = {
      * to one answer about it.
      */
     evidence?: RecipeEvidence;
+    /** The open bag, as on the card: a badge in the corner row, no new row. */
+    bag?: StoredBagReading;
+    /** How fresh the open bag is, as on the card: beside the bag badge, no new row. */
+    freshness?: Freshness;
     /**
      * The recipe's own actions, mirrored from the overflow sheet the long press
      * opens. Each is optional for the same reason its row in the sheet is: brew
@@ -214,7 +227,7 @@ type Props = {
  */
 export default function RecipeShelfTile({
     recipe, onPress, onLongPress, showCoffeeMarker = true, dottedProfile = false,
-    evidence, onBrew, onShare, onWrite, onDuplicate, onDelete, onToggleFavourite,
+    evidence, bag, freshness, onBrew, onShare, onWrite, onDuplicate, onDelete, onToggleFavourite,
     onHistory, editing = false, slotMarker, onEasyMode, showPicture = false
 }: Props) {
     const accent = resolveAccent(recipe);
@@ -230,9 +243,11 @@ export default function RecipeShelfTile({
     // screen reader as the accent colour alone.
     const figures = figuresLine(recipe, isTea);
     const shownEvidence = evidenceLine(evidence);
+    const bagReading = bag === undefined ? undefined : readBag(bag.bag, bag.usedGrams, recipe.dosage);
     const {width, fontScale} = useWindowDimensions();
     const metadata = {
-        evidence: shownEvidence,
+        evidence: shownEvidence, bag: bagReading === undefined ? undefined : bagBadge(bagReading),
+        freshness: freshness === undefined ? undefined : freshnessBadge(freshness),
         slot: slotMarker?.slots.join(" "), marker: showMarker ? marker : undefined,
         favourite: recipe.favourite, editing, uuid: recipe.uuid
     };
@@ -260,7 +275,9 @@ export default function RecipeShelfTile({
         !isTea && recipe.grinder && isSet(recipe.grindSize)
             ? `grind ${recipe.grindSize}`
             : undefined,
-        ...spokenEvidence(evidence)
+        ...spokenEvidence(evidence),
+        bagReading !== undefined ? spokenBag(bagReading) : undefined,
+        freshness !== undefined ? spokenFreshness(freshness) : undefined
     ].filter((part) => part !== undefined).join(", ");
 
     // The long press is unreachable by a screen reader, so the acts it opens are
