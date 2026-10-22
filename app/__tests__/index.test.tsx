@@ -459,8 +459,11 @@ describe("HomeScreen", () => {
         }, {timeout: SHEET_PRESS_TIMEOUT});
         expect(screen.getByText("Kept recipe")).toBeTruthy();
     });
+    // ccc/main draws subscribed roasters on home (fork-only); with that
+    // switched off, home is upstream's saved-recipes-only screen again.
     it.each([false, true])("keeps followed roasters out of home and search with saved recipes: %s", async saved => {
         const settings = new Settings(memoryStorage({
+            showRoastersOnHome:   false,
             roasterSubscriptions: JSON.stringify([{
                 feed: FEED_URL, roaster: "Unsaved catalogue", lastSync: Date.now(),
                 lastAttempt: Date.now(), paused: true, pinnedAt: 1
@@ -3593,118 +3596,6 @@ describe("the import deep link", () => {
     });
 });
 
-describe("switching machines from the home screen", () => {
-    /** Two saved machines, Home in use. */
-    function twoMachines(): Settings {
-        return new Settings(memoryStorage({
-            machineDeviceId: "HOME",
-            savedMachines: JSON.stringify([
-                {id: "HOME", label: "Home", model: "studio", modelString: "", advertisedName: "",
-                 serial: ""},
-                {id: "WORK", label: "Work", model: "original", modelString: "", advertisedName: "",
-                 serial: "", colour: 2}
-            ])
-        }));
-    }
-
-    beforeEach(() => {
-        mockRemembered = "HOME";
-        mockMachineStatus = "connected";
-        mockMachineInfo = {waterEnough: true, mode: "PRO", grindSize: 62};
-    });
-
-    it("draws no switcher in the panel with one machine saved", async () => {
-        await renderWithProviders(
-            <HomeScreen db={store([])} settings={new Settings(memoryStorage({machineDeviceId: "HOME"}))}/>
-        );
-        await fireEvent.press(screen.getByLabelText("Machine connected"));
-
-        expect(screen.getByText("WATER")).toBeTruthy();
-        expect(screen.queryByTestId("machine-choice")).toBeNull();
-    });
-
-    it("shows the switcher at the top of the panel with two, naming the machine, model and state", async () => {
-        await renderWithProviders(<HomeScreen db={store([])} settings={twoMachines()}/>);
-        await fireEvent.press(screen.getByLabelText("Connected to Home"));
-
-        expect(screen.getByTestId("machine-choice-label").props.children).toBe("HOME");
-        expect(screen.getByTestId("machine-choice-detail").props.children).toBe("STUDIO · CONNECTED");
-    });
-
-    it("opens the existing picker from the switcher, and a pick switches through it", async () => {
-        await renderWithProviders(<HomeScreen db={store([])} settings={twoMachines()}/>);
-        await fireEvent.press(screen.getByLabelText("Connected to Home"));
-        await fireEvent.press(screen.getByLabelText(/^Machine, Home/));
-
-        await waitFor(() => expect(screen.getByLabelText(/^Work, Original/)).toBeTruthy());
-        await waitFor(async () => {
-            if (mockChooseMachine.mock.calls.length === 0) {
-                await fireEvent.press(screen.getByLabelText(/^Work, Original/));
-            }
-            expect(mockChooseMachine).toHaveBeenCalledWith(expect.anything(), expect.anything(), "WORK");
-        }, {timeout: SHEET_PRESS_TIMEOUT});
-    });
-
-    it("opens the picker straight from a hold on the machine glyph", async () => {
-        await renderWithProviders(<HomeScreen db={store([])} settings={twoMachines()}/>);
-
-        await fireEvent(screen.getByLabelText("Connected to Home"), "longPress");
-
-        expect(screen.getByTestId("machine-pick-scroll")).toBeTruthy();
-        // Past the panel, not through it.
-        expect(screen.queryByText("WATER")).toBeNull();
-    });
-
-    it("tells a screen reader about the hold", async () => {
-        await renderWithProviders(<HomeScreen db={store([])} settings={twoMachines()}/>);
-
-        const dot = screen.getByLabelText("Connected to Home");
-        expect(dot.props.accessibilityHint).toBe("Shows the machine panel. Hold to switch machines.");
-        expect(dot.props.accessibilityActions).toEqual([{name: "longpress", label: "Switch machine"}]);
-    });
-
-    it("does on a hold what a tap does with one machine saved", async () => {
-        await renderWithProviders(
-            <HomeScreen db={store([])} settings={new Settings(memoryStorage({machineDeviceId: "HOME"}))}/>
-        );
-
-        await fireEvent(screen.getByLabelText("Machine connected"), "longPress");
-
-        expect(screen.getByText("WATER")).toBeTruthy();
-        expect(screen.queryByTestId("machine-pick-scroll")).toBeNull();
-    });
-
-    it("locks the picker opened by a hold while a brew owns the link", async () => {
-        mockChangeBlocker = "A brew is running. Stop it or let it finish before changing machines.";
-        await renderWithProviders(<HomeScreen db={store([])} settings={twoMachines()}/>);
-
-        await fireEvent(screen.getByLabelText("Connected to Home"), "longPress");
-
-        expect(screen.getByTestId("machine-pick-note").props.children).toMatch(/A brew is running/);
-        const work = screen.getByLabelText(/^Work, Original/);
-        expect(work.props.accessibilityState).toMatchObject({disabled: true});
-        await fireEvent.press(work);
-        expect(mockChooseMachine).not.toHaveBeenCalled();
-        // No look around alongside a live brew.
-        expect(mockSurveyMachines).not.toHaveBeenCalled();
-    });
-
-    it("draws the glyph in the connected machine's colour, and one machine in green", async () => {
-        const settings = twoMachines();
-        const {unmount} = await renderWithProviders(<HomeScreen db={store([])} settings={settings}/>);
-        const ink = () => within(screen.getByTestId("machine-dot-lit", {includeHiddenElements: true}))
-            .getAllByTestId("dot-icon-dot", {includeHiddenElements: true})[0].props.style.backgroundColor;
-        expect(ink()).toBe(machineColours[0].ink);
-        unmount();
-
-        mockRemembered = "WORK";
-        settings.set("machineDeviceId", "WORK");
-        await renderWithProviders(<HomeScreen db={store([])} settings={settings}/>);
-        expect(screen.getByLabelText("Connected to Work")).toBeTruthy();
-        expect(ink()).toBe(machineColours[2].ink);
-    });
-});
-
 // Fork-only (ccc/main): the home strip, home search and empty-library button.
 describe("subscribed roasters on the home screen", () => {
     const OTHER_URL = "https://other.example/feed.json";
@@ -3972,5 +3863,117 @@ describe("subscribed roasters on the home screen", () => {
         await renderHome({settings: roasterSettings([{id: "a"}], [{id: "b"}])});
         await fireEvent.press(screen.getByRole("button", {name: "Browse your roasters"}));
         expect(mockPush).toHaveBeenCalledWith("/roasters");
+    });
+});
+
+describe("switching machines from the home screen", () => {
+    /** Two saved machines, Home in use. */
+    function twoMachines(): Settings {
+        return new Settings(memoryStorage({
+            machineDeviceId: "HOME",
+            savedMachines: JSON.stringify([
+                {id: "HOME", label: "Home", model: "studio", modelString: "", advertisedName: "",
+                 serial: ""},
+                {id: "WORK", label: "Work", model: "original", modelString: "", advertisedName: "",
+                 serial: "", colour: 2}
+            ])
+        }));
+    }
+
+    beforeEach(() => {
+        mockRemembered = "HOME";
+        mockMachineStatus = "connected";
+        mockMachineInfo = {waterEnough: true, mode: "PRO", grindSize: 62};
+    });
+
+    it("draws no switcher in the panel with one machine saved", async () => {
+        await renderWithProviders(
+            <HomeScreen db={store([])} settings={new Settings(memoryStorage({machineDeviceId: "HOME"}))}/>
+        );
+        await fireEvent.press(screen.getByLabelText("Machine connected"));
+
+        expect(screen.getByText("WATER")).toBeTruthy();
+        expect(screen.queryByTestId("machine-choice")).toBeNull();
+    });
+
+    it("shows the switcher at the top of the panel with two, naming the machine, model and state", async () => {
+        await renderWithProviders(<HomeScreen db={store([])} settings={twoMachines()}/>);
+        await fireEvent.press(screen.getByLabelText("Connected to Home"));
+
+        expect(screen.getByTestId("machine-choice-label").props.children).toBe("HOME");
+        expect(screen.getByTestId("machine-choice-detail").props.children).toBe("STUDIO · CONNECTED");
+    });
+
+    it("opens the existing picker from the switcher, and a pick switches through it", async () => {
+        await renderWithProviders(<HomeScreen db={store([])} settings={twoMachines()}/>);
+        await fireEvent.press(screen.getByLabelText("Connected to Home"));
+        await fireEvent.press(screen.getByLabelText(/^Machine, Home/));
+
+        await waitFor(() => expect(screen.getByLabelText(/^Work, Original/)).toBeTruthy());
+        await waitFor(async () => {
+            if (mockChooseMachine.mock.calls.length === 0) {
+                await fireEvent.press(screen.getByLabelText(/^Work, Original/));
+            }
+            expect(mockChooseMachine).toHaveBeenCalledWith(expect.anything(), expect.anything(), "WORK");
+        }, {timeout: SHEET_PRESS_TIMEOUT});
+    });
+
+    it("opens the picker straight from a hold on the machine glyph", async () => {
+        await renderWithProviders(<HomeScreen db={store([])} settings={twoMachines()}/>);
+
+        await fireEvent(screen.getByLabelText("Connected to Home"), "longPress");
+
+        expect(screen.getByTestId("machine-pick-scroll")).toBeTruthy();
+        // Past the panel, not through it.
+        expect(screen.queryByText("WATER")).toBeNull();
+    });
+
+    it("tells a screen reader about the hold", async () => {
+        await renderWithProviders(<HomeScreen db={store([])} settings={twoMachines()}/>);
+
+        const dot = screen.getByLabelText("Connected to Home");
+        expect(dot.props.accessibilityHint).toBe("Shows the machine panel. Hold to switch machines.");
+        expect(dot.props.accessibilityActions).toEqual([{name: "longpress", label: "Switch machine"}]);
+    });
+
+    it("does on a hold what a tap does with one machine saved", async () => {
+        await renderWithProviders(
+            <HomeScreen db={store([])} settings={new Settings(memoryStorage({machineDeviceId: "HOME"}))}/>
+        );
+
+        await fireEvent(screen.getByLabelText("Machine connected"), "longPress");
+
+        expect(screen.getByText("WATER")).toBeTruthy();
+        expect(screen.queryByTestId("machine-pick-scroll")).toBeNull();
+    });
+
+    it("locks the picker opened by a hold while a brew owns the link", async () => {
+        mockChangeBlocker = "A brew is running. Stop it or let it finish before changing machines.";
+        await renderWithProviders(<HomeScreen db={store([])} settings={twoMachines()}/>);
+
+        await fireEvent(screen.getByLabelText("Connected to Home"), "longPress");
+
+        expect(screen.getByTestId("machine-pick-note").props.children).toMatch(/A brew is running/);
+        const work = screen.getByLabelText(/^Work, Original/);
+        expect(work.props.accessibilityState).toMatchObject({disabled: true});
+        await fireEvent.press(work);
+        expect(mockChooseMachine).not.toHaveBeenCalled();
+        // No look around alongside a live brew.
+        expect(mockSurveyMachines).not.toHaveBeenCalled();
+    });
+
+    it("draws the glyph in the connected machine's colour, and one machine in green", async () => {
+        const settings = twoMachines();
+        const {unmount} = await renderWithProviders(<HomeScreen db={store([])} settings={settings}/>);
+        const ink = () => within(screen.getByTestId("machine-dot-lit", {includeHiddenElements: true}))
+            .getAllByTestId("dot-icon-dot", {includeHiddenElements: true})[0].props.style.backgroundColor;
+        expect(ink()).toBe(machineColours[0].ink);
+        unmount();
+
+        mockRemembered = "WORK";
+        settings.set("machineDeviceId", "WORK");
+        await renderWithProviders(<HomeScreen db={store([])} settings={settings}/>);
+        expect(screen.getByLabelText("Connected to Work")).toBeTruthy();
+        expect(ink()).toBe(machineColours[2].ink);
     });
 });
