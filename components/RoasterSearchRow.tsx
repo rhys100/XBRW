@@ -14,7 +14,7 @@ const PHOTO_RADIUS = 8;
  *
  * Shorter than the roaster list's row: the photo, the name, who roasts it and
  * the roast level. The rest is a tap away on the coffee's own screen, which
- * is where BREW NOW and ADD TO SHELF are.
+ * is where OPEN RECIPE and ADD TO SHELF are.
  */
 export default function RoasterSearchRow({match, onPress}: {
     match: RoasterMatch;
