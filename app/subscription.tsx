@@ -14,11 +14,12 @@ import SettingsToggleRow from "@/components/SettingsToggleRow";
 import UnsubscribeSheet from "@/components/UnsubscribeSheet";
 
 import router from "@/hooks/steadyRouter";
-import {sharedSettings} from "@/hooks/useSetting";
+import {sharedSettings, useSetting} from "@/hooks/useSetting";
 import {useLiveBrew} from "@/hooks/useLiveBrew";
 import {useRoasterSubscriptions} from "@/hooks/useRoasterSubscriptions";
 import {readCatalogue, scrollEndPadding} from "@/library/roasterCatalogue";
 import type {RoasterFeed} from "@/library/roasterFeed";
+import {homeChoiceLine} from "@/library/roasterHome";
 import {subscriptionFor} from "@/library/roasterSubscription";
 import {countLine, shownKey, statusLine} from "@/library/subscriptionStatus";
 import type {Settings} from "@/library/Settings";
@@ -49,6 +50,8 @@ export default function SubscriptionScreen({settings, feedUrl, fetchBody, now: c
     const {ratingNoteOpen} = useLiveBrew();
     const store = settings ?? sharedSettings();
     const subs = useRoasterSubscriptions({settings: store, fetchBody, now: clock});
+    // Fork-only (ccc/main): an Import choice also leads the home strip.
+    const [onHome] = useSetting("showRoastersOnHome", store);
     // Read once and again after each action, as the list does.
     const now = useCatalogueNow(clock);
     const [ending, setEnding] = useState(false);
@@ -90,7 +93,10 @@ export default function SubscriptionScreen({settings, feedUrl, fetchBody, now: c
 
                     <SettingsSection>
                         <SettingsToggleRow label="Show in Import"
-                                           description="Choose up to 3 roasters, in the order you select them."
+                                           description={[
+                                               "Choose up to 3 roasters, in the order you select them.",
+                                               homeChoiceLine(subs.subscriptions.length, onHome)
+                                           ].filter((line) => line !== null).join(" ")}
                                            value={sub.pinnedAt !== undefined}
                                            onChange={(shown) => subs.showInImport(sub, shown)}/>
                         <SettingsActionRow label="Browse coffees"

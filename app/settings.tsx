@@ -282,6 +282,8 @@ export default function SettingsScreen({settings}: Props) {
     const [roasterFeedOptOut, setRoasterFeedOptOut] = useSetting("roasterFeedOptOut", settings);
     const [roasterSubscriptions, setRoasterSubscriptions] = useSetting("roasterSubscriptions", settings);
     const [importFingerprints, setImportFingerprints] = useSetting("importFingerprints", settings);
+    // A row on the Roaster feeds screen, read here for the backup.
+    const [showRoastersOnHome, setShowRoastersOnHome] = useSetting("showRoastersOnHome", settings);
 
     // Deliberately given no query: this screen's questions are all about the
     // whole library, never about a view of it. That is what lets the restore
@@ -332,7 +334,7 @@ export default function SettingsScreen({settings}: Props) {
             brewHistorySort, brewHistorySortDirection,
             librarySort, librarySortDirection, libraryFavouritesFirst,
             libraryView, invertAutoShelves, hiddenShelves, myShelves,
-            roasterFeedOptOut, roasterSubscriptions, importFingerprints
+            roasterFeedOptOut, roasterSubscriptions, showRoastersOnHome, importFingerprints
         };
     }
 
@@ -523,6 +525,9 @@ export default function SettingsScreen({settings}: Props) {
             setRoasterSubscriptions(incoming.roasterSubscriptions === "" ? "" : serialiseSubscriptions(
                 parseSubscriptions(incoming.roasterSubscriptions).map((sub) =>
                     ({...sub, lastSync: 0, lastAttempt: 0}))));
+        }
+        if (typeof incoming.showRoastersOnHome === "boolean") {
+            setShowRoastersOnHome(incoming.showRoastersOnHome);
         }
         // With the subscriptions, so a built-in feed switched off in the
         // backup is not switched back on by the next sync.

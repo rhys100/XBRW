@@ -11,7 +11,7 @@ import SettingsSection from "@/components/SettingsSection";
 import SettingsToggleRow from "@/components/SettingsToggleRow";
 import {notify} from "@/components/XbrwToast";
 
-import {sharedSettings} from "@/hooks/useSetting";
+import {sharedSettings, useSetting} from "@/hooks/useSetting";
 import {useLiveBrew} from "@/hooks/useLiveBrew";
 import {refreshMessage, useRoasterSubscriptions} from "@/hooks/useRoasterSubscriptions";
 import {BUILT_IN_FEEDS, setBuiltInOn, type BuiltInFeed} from "@/library/builtInFeeds";
@@ -48,6 +48,8 @@ export default function SubscriptionsScreen({settings, fetchBody, now: clock, bu
     const now = useCatalogueNow(clock);
     const insets = useSafeAreaInsets();
     const active = subs.subscriptions.filter((sub) => !sub.paused);
+    // Fork-only (ccc/main): whether the roasters show on the home screen.
+    const [onHome, setOnHome] = useSetting("showRoastersOnHome", store);
 
     return (
         <YStack testID="subscriptions-screen" flex={1} backgroundColor={palette.base}>
@@ -81,6 +83,14 @@ export default function SubscriptionsScreen({settings, fetchBody, now: clock, bu
                                                }}/>
                         ))}
                     </SettingsSection>}
+                    {subs.subscriptions.length > 0 && (
+                        <SettingsSection>
+                            <SettingsToggleRow label="Show roasters on the home screen"
+                                               description="Under the tiles, and a button on an empty library. Search finds their coffees either way."
+                                               value={onHome}
+                                               onChange={setOnHome}/>
+                        </SettingsSection>
+                    )}
 
                     {subs.subscriptions.length === 0 && (
                         <Text testID="subscriptions-empty" fontSize={14} lineHeight={20}
