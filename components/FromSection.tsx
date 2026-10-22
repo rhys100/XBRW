@@ -27,6 +27,22 @@ function pageLabel(recipe: Recipe): string {
 }
 
 /**
+ * The roaster a recipe came from, when a link or a roaster's catalogue said.
+ *
+ * Fork-only (ccc/main, from preview/all 467ce73). Only for a recipe that
+ * arrived through an import link or a catalogue (`source` import or
+ * brewmind), and only when its coffee names a roaster. A roaster's recipes are
+ * shared from somebody's personal xBloom account, so "Arrived from rhys" named
+ * the person who pressed share rather than the roaster whose recipe it is.
+ * The pod section reads it too, to drop USE THIS NAME for the same recipes.
+ */
+export function roasterOf(recipe: Recipe): string | undefined {
+    if (recipe.source !== "import" && recipe.source !== "brewmind") return undefined;
+    const roaster = recipe.coffee?.roaster?.trim() ?? "";
+    return roaster === "" ? undefined : roaster;
+}
+
+/**
  * Where a recipe arrived from, when it arrived from somewhere.
  *
  * A claim, not an identity. The copy says a recipe arrived from a name, never
@@ -57,11 +73,16 @@ export default function FromSection({recipe, accent, showAvatar}: {
 
     const sharedBy = recipe.sharedBy?.trim() ?? "";
     const fromXbloom = recipe.xid.trim().length > 0;
-    const avatar = recipe.sharedByAvatar ?? "";
+    const roaster = roasterOf(recipe);
+    // A roaster's recipe names nobody who shared it, so it draws no sharer's
+    // face either: the accent mark, and the coffee's photo stays in XPOD.
+    const avatar = roaster === undefined ? recipe.sharedByAvatar ?? "" : "";
     const drawAvatar = showAvatar && avatar.length > 0 && !failed;
     const recipeUrl = recipe.recipeUrl ?? "";
 
-    if (sharedBy.length === 0 && !fromXbloom && recipeUrl.length === 0) return null;
+    if (sharedBy.length === 0 && !fromXbloom && recipeUrl.length === 0 && roaster === undefined) {
+        return null;
+    }
 
     return (
         <DeckSection title="FROM" testID="about-from">
@@ -81,12 +102,18 @@ export default function FromSection({recipe, accent, showAvatar}: {
                           backgroundColor={appearance.recipe(accent).fill}/>
                 )}
 
-                <Text flex={1} fontSize={sharedBy.length > 0 ? 16 : 13}
-                      color={sharedBy.length > 0 ? palette.text : palette.dim}>
-                    {sharedBy.length > 0
-                        ? `Arrived from ${sharedBy}`
-                        : "An xBloom recipe. Nobody is named as the sharer."}
-                </Text>
+                {roaster !== undefined ? (
+                    <Text testID="from-roaster" flex={1} fontSize={16} color={palette.text}>
+                        {`From ${roaster}`}
+                    </Text>
+                ) : (
+                    <Text flex={1} fontSize={sharedBy.length > 0 ? 16 : 13}
+                          color={sharedBy.length > 0 ? palette.text : palette.dim}>
+                        {sharedBy.length > 0
+                            ? `Arrived from ${sharedBy}`
+                            : "An xBloom recipe. Nobody is named as the sharer."}
+                    </Text>
+                )}
             </XStack>
 
             {recipeUrl.length > 0 ? (
