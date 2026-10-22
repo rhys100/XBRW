@@ -120,6 +120,30 @@ describe("PodSection", () => {
         expect(screen.queryByTestId("pod-following")).toBeNull();
     });
 
+    // Fork-only (ccc/main): a roaster's xBloom title is labelled, not offered.
+    it("labels a roaster's xBloom profile name and offers no button for it", async () => {
+        const recipe = linked({
+            name: "Ecuador | Vinka Farm", xbloomName: "ecu vinka sidra ana washed 18g",
+            sharedBy: "rhys", source: "import"
+        });
+        recipe.coffee = {name: "Ecuador | Vinka Farm", roaster: "Central Coast Coffee"};
+        await renderWithProviders(<PodSection {...props({recipe})}/>);
+
+        expect(screen.getByTestId("pod-profile-label")).toHaveTextContent("xBloom profile name");
+        expect(screen.getByTestId("pod-name")).toHaveTextContent("ecu vinka sidra ana washed 18g");
+        expect(screen.getByTestId("pod-name")).toHaveStyle({color: palette.dim});
+        expect(screen.queryByTestId("pod-use-name")).toBeNull();
+    });
+
+    it("keeps the button for a link recipe whose coffee names no roaster", async () => {
+        const recipe = linked({name: "Sunday", source: "import"});
+        recipe.coffee = {name: "Peru"};
+        await renderWithProviders(<PodSection {...props({recipe})}/>);
+
+        expect(screen.getByTestId("pod-use-name")).toBeTruthy();
+        expect(screen.queryByTestId("pod-profile-label")).toBeNull();
+    });
+
     it("follows the pod by clearing the name, never by copying it", async () => {
         // An empty name is not a missing value: `displayName()` falls back to
         // the pod name, so clearing restores the link. Copying would freeze the
