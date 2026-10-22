@@ -11,6 +11,7 @@ import AboutDeck from "@/components/AboutDeck";
 import {BeanProfileSheet} from "@/components/BeanProfileSheet";
 import BypassRung from "@/components/BypassRung";
 import BypassWriteSheet from "@/components/BypassWriteSheet";
+import WriteChooserSheet from "@/components/WriteChooserSheet";
 import DeckSwitch, {type Deck} from "@/components/DeckSwitch";
 import DotMatrixText from "@/components/DotMatrixText";
 import FieldRow from "@/components/FieldRow";
@@ -732,7 +733,10 @@ function ActionBar({
                                  onBrew={onBrew}
                                  onToggleQuickEdit={onQuickEdit}/>
             )}
-            <BarButton label="WRITE" accessibilityLabel="Write card"
+            {/* With a machine, WRITE asks between an Easy Mode slot and a
+                card, so it is not spoken as a card write. */}
+            <BarButton label="WRITE"
+                       accessibilityLabel={canBrewAtAll ? "Write to Easy Mode or card" : "Write card"}
                        enabled={canWrite}
                        accent={canBrewAtAll ? undefined : accent}
                        flex={canBrewAtAll ? 1 : 2}
@@ -908,6 +912,7 @@ export default function EditRecipe(
     const machinePicker = useMachinePicker();
     const [beanProfileOpen, setBeanProfileOpen] = useState(false);
     const [bypassWriteOpen, setBypassWriteOpen] = useState(false);
+    const [writeChooserOpen, setWriteChooserOpen] = useState(false);
     const [quickEditOpen, setQuickEditOpen] = useState(false);
     const [quickEditAdjustments, setQuickEditAdjustments] =
         useState<QuickEditAdjustments>({});
@@ -1248,7 +1253,20 @@ export default function EditRecipe(
         }
     }
 
+    /**
+     * WRITE. With a machine remembered the recipe can go to an Easy Mode slot
+     * as well as a card, so it asks which; with none, a card is the only place
+     * it can go and WRITE goes straight there, as it always has.
+     */
     async function onWritePress() {
+        if (rememberedMachine !== "") {
+            setWriteChooserOpen(true);
+            return;
+        }
+        await writeToCard();
+    }
+
+    async function writeToCard() {
         const currentRecipe = recipe;
         if (!currentRecipe) return;
         await flushDrafts();
@@ -1312,7 +1330,7 @@ export default function EditRecipe(
     // positioned overlay only covers visually. This is the Android half of what
     // `accessibilityViewIsModal` does on iOS.
     const screenCovered = showNfcOverlay || overflowOpen || revertOpen || helpOpen
-        || bypassWriteOpen || renameOpen || beanProfileOpen || leavePrompt !== null
+        || bypassWriteOpen || writeChooserOpen || renameOpen || beanProfileOpen || leavePrompt !== null
         || ratingNoteOpen || machinePicker.open;
     // The quick edit panel covers the deck but not the action bar, which holds
     // the BREW it adjusts. So it hides the deck rather than the screen.
@@ -1578,6 +1596,10 @@ export default function EditRecipe(
                                 onRescan={machinePicker.rescan}
                                 blocker={machinePicker.blocker}
                                 onChoose={machinePicker.choose}/>
+
+            <WriteChooserSheet open={writeChooserOpen} onOpenChange={setWriteChooserOpen}
+                               onEasyMode={() => void openInEasyMode()}
+                               onCard={() => void writeToCard()}/>
 
             <BypassWriteSheet open={bypassWriteOpen}
                               recipe={recipe}
