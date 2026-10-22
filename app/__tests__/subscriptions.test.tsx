@@ -333,3 +333,34 @@ describe("status wording", () => {
             .toEqual({tone: "error", message: "Couldn't update your roasters. Check your connection."});
     });
 });
+
+// Fork-only (ccc/main): the home strip's switch and what an Import choice does there.
+describe("roasters on the home screen", () => {
+    it("draws no home screen switch without a subscription", async () => {
+        await drawList();
+        expect(screen.queryByRole("switch", {name: "Show roasters on the home screen"})).toBeNull();
+    });
+
+    it("turns the home strip off and on from Roaster feeds", async () => {
+        const {settings} = await drawList(subscribed());
+        expect(screen.getByRole("switch", {name: "Show roasters on the home screen", checked: true}))
+            .toBeTruthy();
+        await fireEvent.press(screen.getByRole("switch", {name: "Show roasters on the home screen"}));
+        expect(settings.get("showRoastersOnHome")).toBe(false);
+    });
+
+    it("says an Import choice also leads the home screen, and nothing about it with the strip off", async () => {
+        const settings = subscribed();
+        await drawDetail(settings);
+        expect(screen.getByText(
+            "Choose up to 3 roasters, in the order you select them. Chosen roasters also come first on the home screen."
+        )).toBeTruthy();
+    });
+
+    it("leaves the Import line as it was with the home strip off", async () => {
+        const settings = subscribed();
+        settings.set("showRoastersOnHome", false);
+        await drawDetail(settings);
+        expect(screen.getByText("Choose up to 3 roasters, in the order you select them.")).toBeTruthy();
+    });
+});

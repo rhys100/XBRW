@@ -210,7 +210,7 @@ export const OUTBOUND_CALLS: OutboundCall[] = [
     {
         id:      "images",
         title:   "Load a photo",
-        trigger: "You open the hub, a roaster's catalogue, an import preview, or a saved recipe that carries a pod photo or the avatar of whoever shared it. Recipe card photos includes Ready to brew. Recipe card photos, Shelf photo previews and Pictures in ABOUT control their respective placements.",
+        trigger: "You open the hub, a roaster's catalogue, an import preview, or a saved recipe that carries a pod photo or the avatar of whoever shared it. Recipe card photos includes Ready to brew. The home screen's roasters and their search results show coffee photos while you subscribe to a roaster. Recipe card photos, Shelf photo previews and Pictures in ABOUT control their respective placements.",
         host:    "whichever host xBloom or the roaster named",
         hostPinned: false,
         owner:   "xBloom, the roaster, or whoever they point at",
@@ -230,7 +230,11 @@ export const OUTBOUND_CALLS: OutboundCall[] = [
             "components/ImportResult.tsx",
             "app/hubRecipe.tsx",
             "components/CatalogueParts.tsx",
-            "components/RoasterCoffeeRow.tsx"
+            "components/RoasterCoffeeRow.tsx",
+            // Fork-only (ccc/main): the home strip and home search draw
+            // photos from the cached feeds while you subscribe to a roaster.
+            "components/RoasterStrip.tsx",
+            "components/RoasterSearchRow.tsx"
         ]
     }
 ];

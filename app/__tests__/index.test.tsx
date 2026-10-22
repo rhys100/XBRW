@@ -21,7 +21,12 @@ import {TYPING_DEBOUNCE_MS} from "@/constants/motion";
 import {sharedSlotDatabase} from "@/hooks/useEasyModeSlots";
 import {snapshotRecipe} from "@/library/slots/slotModel";
 import * as roasterFeed from "@/library/roasterFeed";
-import {FEED_URL, feedBody} from "@/test-utils/roasterFeed";
+import {FEED_URL, feedBody, memorySettings, type CoffeeSpec} from "@/test-utils/roasterFeed";
+import {forgetLastMove} from "@/hooks/steadyRouter";
+import {recordSync} from "@/library/roasterAlerts";
+import {writeCatalogue} from "@/library/roasterCatalogue";
+import {forgetHomeCataloguesForTests} from "@/library/roasterHome";
+import {setPaused, setPinned, subscribe, unsubscribe, updateSubscription} from "@/library/roasterSync";
 import {rememberPrint} from "@/library/importRefresh";
 import {sharedSettings} from "@/hooks/useSetting";
 
@@ -3593,5 +3598,275 @@ describe("switching machines from the home screen", () => {
         await renderWithProviders(<HomeScreen db={store([])} settings={settings}/>);
         expect(screen.getByLabelText("Connected to Work")).toBeTruthy();
         expect(ink()).toBe(machineColours[2].ink);
+    });
+});
+
+// Fork-only (ccc/main): the home strip, home search and empty-library button.
+describe("subscribed roasters on the home screen", () => {
+    const OTHER_URL = "https://other.example/feed.json";
+
+    /**
+     * Subscribed now, so the screen's own sync on open finds nothing due and
+     * asks nobody for anything.
+     */
+    function roasterSettings(first: CoffeeSpec[], second?: CoffeeSpec[]): Settings {
+        const settings = memorySettings();
+        const a = feedBody(first, "Test Roaster");
+        subscribe(settings, FEED_URL, a.feed, a.body, Date.now());
+        if (second !== undefined) {
+            const b = feedBody(second, "Other Roaster");
+            subscribe(settings, OTHER_URL, b.feed, b.body, Date.now());
+        }
+        return settings;
+    }
+
+    async function search(term: string) {
+        await fireEvent.press(screen.getByTestId("rail-search"));
+        await act(async () => {
+            await fireEvent.changeText(screen.getByTestId("rail-search-input"), term);
+            jest.advanceTimersByTime(TYPING_DEBOUNCE_MS);
+        });
+    }
+
+    beforeEach(() => {
+        forgetLastMove();
+        forgetHomeCataloguesForTests();
+    });
+
+    it("changes nothing for somebody with no subscriptions", async () => {
+        jest.useFakeTimers();
+        await renderHome({recipes: [named("Peru")]});
+        expect(screen.queryByTestId("roaster-strip")).toBeNull();
+        expect(screen.queryByText("YOUR ROASTERS")).toBeNull();
+
+        await search("peru");
+        expect(screen.queryByTestId("section-heading-roasters")).toBeNull();
+        expect(screen.getAllByTestId("recipe-card")).toHaveLength(1);
+    });
+
+    it("keeps the empty library's text alone without a subscription", async () => {
+        await renderHome();
+        expect(screen.getByText("NO RECIPES YET")).toBeTruthy();
+        expect(screen.queryByTestId("empty-library-browse")).toBeNull();
+    });
+
+    it("draws the strip under the tiles and opens a roaster's coffees", async () => {
+        await renderHome({recipes: [named("Kenya")], settings: roasterSettings([{id: "a"}, {id: "b"}])});
+        expect(screen.getByTestId("roaster-strip")).toBeTruthy();
+        expect(screen.getByText("2 coffees")).toBeTruthy();
+
+        await fireEvent.press(screen.getByRole("button", {name: "Test Roaster, 2 coffees"}));
+        expect(mockPush).toHaveBeenCalledWith({pathname: "/roaster", params: {feed: FEED_URL}});
+    });
+
+    it("shows a roaster's NEW count on the strip", async () => {
+        const settings = roasterSettings([{id: "a"}]);
+        const next = feedBody([{id: "a"}, {id: "b"}], "Test Roaster");
+        writeCatalogue(settings, FEED_URL, next.body, Date.now());
+        recordSync(settings, FEED_URL, next.feed);
+
+        await renderHome({recipes: [named("Kenya")], settings});
+        expect(screen.getByTestId("roaster-strip-Test Roaster-new")).toHaveTextContent("1 NEW");
+    });
+
+    it("searches the library first, then the roasters, and opens the coffee", async () => {
+        jest.useFakeTimers();
+        await renderHome({
+            recipes:  [named("El Palto at home"), named("Kenya")],
+            settings: roasterSettings([{id: "a", name: "Peru El Palto"}, {id: "b", name: "Kenya AA"}])
+        });
+        await search("palto");
+
+        expect(screen.getAllByTestId("recipe-card")).toHaveLength(1);
+        expect(screen.getByTestId("section-heading-roasters")).toHaveTextContent("FROM YOUR ROASTERS");
+        expect(screen.getByTestId("roaster-result-id:a")).toBeTruthy();
+        expect(screen.queryByTestId("roaster-result-id:b")).toBeNull();
+        // Library first, then the heading, then the roaster's coffee.
+        const drawn = JSON.stringify(screen.toJSON());
+        const at = (id: string) => drawn.indexOf(`"testID":"${id}"`);
+        expect(at("recipe-card")).toBeGreaterThanOrEqual(0);
+        expect(at("recipe-card")).toBeLessThan(at("section-heading-roasters"));
+        expect(at("section-heading-roasters")).toBeLessThan(at("roaster-result-id:a"));
+
+        await fireEvent.press(screen.getByRole("button", {
+            name: "Peru El Palto, from Test Roaster, Light roast"
+        }));
+        expect(mockPush).toHaveBeenCalledWith({
+            pathname: "/roasterCoffee", params: {feed: FEED_URL, coffee: "id:a"}
+        });
+    });
+
+    it("lists roaster coffees when the library has no match, instead of NO MATCHES", async () => {
+        jest.useFakeTimers();
+        await renderHome({
+            recipes:  [named("Kenya")],
+            settings: roasterSettings([{id: "a", name: "Peru El Palto"}])
+        });
+        await search("peru");
+        expect(screen.queryByText("NO MATCHES")).toBeNull();
+        expect(screen.queryByTestId("recipe-card")).toBeNull();
+        expect(screen.getByTestId("roaster-result-id:a")).toBeTruthy();
+    });
+
+    it("offers the roaster's coffees from an empty library", async () => {
+        await renderHome({settings: roasterSettings([{id: "a"}])});
+        expect(screen.getByText("NO RECIPES YET")).toBeTruthy();
+        await fireEvent.press(screen.getByRole("button", {name: "Browse Test Roaster"}));
+        expect(mockPush).toHaveBeenCalledWith({pathname: "/roaster", params: {feed: FEED_URL}});
+    });
+
+    it("shows a roaster still loading, opens its feed screen from it, and offers no browse", async () => {
+        const settings = roasterSettings([{id: "a", name: "Peru El Palto"}]);
+        settings.set("roasterCatalogue", "");
+        await renderHome({settings});
+        expect(screen.getByTestId("roaster-strip-Test Roaster-detail")).toHaveTextContent("Loading coffees");
+        expect(screen.queryByTestId("empty-library-browse")).toBeNull();
+        await fireEvent.press(screen.getByRole("button", {name: "Test Roaster, Loading coffees"}));
+        expect(mockPush).toHaveBeenCalledWith({pathname: "/subscription", params: {feed: FEED_URL}});
+    });
+
+    it("says Couldn't update when the first sync failed", async () => {
+        const settings = roasterSettings([{id: "a"}]);
+        settings.set("roasterCatalogue", "");
+        updateSubscription(settings, FEED_URL, (sub) => ({...sub, lastError: "network"}));
+        await renderHome({recipes: [named("Kenya")], settings});
+        expect(screen.getByTestId("roaster-strip-Test Roaster-detail")).toHaveTextContent("Couldn't update");
+    });
+
+    it("marks a paused roaster and still finds its coffees", async () => {
+        jest.useFakeTimers();
+        const settings = roasterSettings([{id: "a", name: "Peru El Palto"}]);
+        setPaused(settings, FEED_URL, true);
+        await renderHome({recipes: [named("Kenya")], settings});
+        expect(screen.getByTestId("roaster-strip-Test Roaster-paused")).toHaveTextContent("PAUSED");
+        await search("palto");
+        expect(screen.getByTestId("roaster-result-id:a")).toBeTruthy();
+    });
+
+    it("says nothing is on sale and leaves a sold-out roaster out of search", async () => {
+        jest.useFakeTimers();
+        const settings = roasterSettings([{id: "a", name: "Peru El Palto", available: false}]);
+        await renderHome({recipes: [named("Kenya")], settings});
+        expect(screen.getByTestId("roaster-strip-Test Roaster-detail"))
+            .toHaveTextContent("No coffees on sale right now");
+        await search("palto");
+        expect(screen.queryByTestId("section-heading-roasters")).toBeNull();
+        expect(screen.getByText("NO MATCHES")).toBeTruthy();
+    });
+
+    it("drops the strip, the results and the NEW count the moment the last roaster goes", async () => {
+        jest.useFakeTimers();
+        const settings = roasterSettings([{id: "a", name: "Peru El Palto"}]);
+        const next = feedBody([{id: "a", name: "Peru El Palto"}, {id: "b", name: "Palto Two"}],
+                              "Test Roaster");
+        writeCatalogue(settings, FEED_URL, next.body, Date.now());
+        recordSync(settings, FEED_URL, next.feed);
+        await renderHome({recipes: [named("Kenya")], settings});
+        expect(screen.getByTestId("roaster-strip-Test Roaster-new")).toHaveTextContent("1 NEW");
+        await search("palto");
+        expect(screen.getByTestId("section-heading-roasters")).toBeTruthy();
+
+        await act(async () => unsubscribe(settings, FEED_URL));
+        expect(screen.queryByTestId("roaster-strip")).toBeNull();
+        expect(screen.queryByTestId("section-heading-roasters")).toBeNull();
+        expect(screen.queryByTestId("roaster-result-id:a")).toBeNull();
+        expect(settings.get("roasterAlerts")).not.toContain("roaster.example");
+    });
+
+    /** Test Roaster, Other Roaster, and as many more as asked for, named Extra 1, 2... */
+    function manyRoasters(extra: number): Settings {
+        const settings = roasterSettings([{id: "a"}], [{id: "b"}]);
+        for (let n = 1; n <= extra; n++) {
+            const more = feedBody([{id: `x${n}`}], `Extra ${n}`);
+            subscribe(settings, `https://extra${n}.example/feed.json`, more.feed, more.body, Date.now());
+        }
+        return settings;
+    }
+
+    it("lists one roaster on its own", async () => {
+        await renderHome({recipes: [named("Kenya")], settings: roasterSettings([{id: "a"}])});
+        expect(screen.getByTestId("roaster-strip-Test Roaster")).toBeTruthy();
+        expect(screen.queryByTestId("roaster-strip-all")).toBeNull();
+    });
+
+    it("gives each of three roasters a row, in name order, with no Roasters row", async () => {
+        await renderHome({recipes: [named("Kenya")], settings: manyRoasters(1)});
+        for (const name of ["Extra 1", "Other Roaster", "Test Roaster"]) {
+            expect(screen.getByTestId(`roaster-strip-${name}`)).toBeTruthy();
+        }
+        const drawn = JSON.stringify(screen.toJSON());
+        expect(drawn.indexOf("roaster-strip-Extra 1")).toBeLessThan(drawn.indexOf("roaster-strip-Other Roaster"));
+        expect(screen.queryByTestId("roaster-strip-all")).toBeNull();
+    });
+
+    it("puts a pinned roaster first when there are three or fewer", async () => {
+        const settings = manyRoasters(1);
+        setPinned(settings, FEED_URL, true, Date.now());
+        await renderHome({recipes: [named("Kenya")], settings});
+        const drawn = JSON.stringify(screen.toJSON());
+        expect(drawn.indexOf("roaster-strip-Test Roaster")).toBeLessThan(drawn.indexOf("roaster-strip-Extra 1"));
+        expect(screen.getByRole("button", {name: "Test Roaster, 1 coffee, pinned"})).toBeTruthy();
+    });
+
+    it("folds four roasters into one Roasters row when none is pinned", async () => {
+        await renderHome({recipes: [named("Kenya")], settings: manyRoasters(2)});
+        expect(screen.queryByTestId("roaster-strip-Test Roaster")).toBeNull();
+        expect(screen.getByText("Roasters · 4")).toBeTruthy();
+        await fireEvent.press(screen.getByRole("button", {name: "All roasters, 4"}));
+        expect(mockPush).toHaveBeenCalledWith("/roasters");
+    });
+
+    it("keeps the Import choices above the Roasters row, three at most, in choice order", async () => {
+        const settings = manyRoasters(3);
+        setPinned(settings, "https://extra3.example/feed.json", true, 1000);
+        setPinned(settings, FEED_URL, true, 2000);
+        setPinned(settings, "https://extra1.example/feed.json", true, 3000);
+        // Import holds three, so a fourth choice is refused.
+        expect(setPinned(settings, OTHER_URL, true, 4000)).toBe(false);
+        await renderHome({recipes: [named("Kenya")], settings});
+        const drawn = JSON.stringify(screen.toJSON());
+        const at = (name: string) => drawn.indexOf(`"testID":"roaster-strip-${name}"`);
+        expect(at("Extra 3")).toBeGreaterThanOrEqual(0);
+        expect(at("Extra 3")).toBeLessThan(at("Test Roaster"));
+        expect(at("Test Roaster")).toBeLessThan(at("Extra 1"));
+        expect(at("Other Roaster")).toBe(-1);
+        expect(at("Extra 1")).toBeLessThan(at("all"));
+        expect(screen.getByText("Roasters · 5")).toBeTruthy();
+    });
+
+    it("goes back to the Roasters row alone when the pin is taken away", async () => {
+        const settings = manyRoasters(2);
+        setPinned(settings, FEED_URL, true, Date.now());
+        await renderHome({recipes: [named("Kenya")], settings});
+        expect(screen.getByTestId("roaster-strip-Test Roaster")).toBeTruthy();
+
+        await act(async () => setPinned(settings, FEED_URL, false, Date.now()));
+        expect(screen.queryByTestId("roaster-strip-Test Roaster")).toBeNull();
+        expect(screen.getByText("Roasters · 4")).toBeTruthy();
+    });
+
+    it("hides the strip and the empty library's button with the setting off, and still searches", async () => {
+        jest.useFakeTimers();
+        const settings = roasterSettings([{id: "a", name: "Peru El Palto"}]);
+        settings.set("showRoastersOnHome", false);
+        await renderHome({recipes: [named("Kenya")], settings});
+        expect(screen.queryByTestId("roaster-strip")).toBeNull();
+        await search("palto");
+        expect(screen.getByTestId("roaster-result-id:a")).toBeTruthy();
+    });
+
+    it("leaves the empty library's text alone with the setting off", async () => {
+        const settings = roasterSettings([{id: "a"}]);
+        settings.set("showRoastersOnHome", false);
+        await renderHome({settings});
+        expect(screen.getByText("NO RECIPES YET")).toBeTruthy();
+        expect(screen.queryByTestId("empty-library-browse")).toBeNull();
+        expect(screen.queryByTestId("roaster-strip")).toBeNull();
+    });
+
+    it("opens the roasters list from an empty library with several roasters", async () => {
+        await renderHome({settings: roasterSettings([{id: "a"}], [{id: "b"}])});
+        await fireEvent.press(screen.getByRole("button", {name: "Browse your roasters"}));
+        expect(mockPush).toHaveBeenCalledWith("/roasters");
     });
 });
