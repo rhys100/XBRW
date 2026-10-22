@@ -529,9 +529,15 @@ class RecipeDatabase {
         if (source.hasName()) copy.name = copyName(source.displayName(), names);
         copy.source = "duplicate";
         copy.createdAt = Date.now();
-        // Cleared so the copy is assigned its own colour on insert rather
-        // than sitting on the original's.
-        copy.accentIndex = undefined;
+        // A roaster's coffee wears that coffee's colour (fork-only, ccc/main):
+        // the roaster's link or feed picked the accent for the coffee through
+        // `roasterAccent`, and a copy is the same coffee, so two Ecuadors read
+        // as two Ecuadors. Narrowed to recipes whose coffee names a roaster,
+        // not any coffee metadata, so a pod copy behaves as upstream's does.
+        // Every other copy is cleared and assigned its own colour on insert
+        // rather than sitting on the original's.
+        const roaster = source.coffee?.roaster?.trim() ?? "";
+        if (roaster === "") copy.accentIndex = undefined;
         // A duplicate is a new local recipe, not a second copy of the account
         // recipe. Carrying the id over would leave two rows both claiming to
         // be the same xBloom recipe, and the import matches on exactly that
