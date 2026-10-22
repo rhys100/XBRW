@@ -357,6 +357,14 @@ export const DEFAULTS = {
     roasterCatalogue: "",
     /** Alert bookkeeping for the cached feeds, also excluded from backups. */
     roasterAlerts: "",
+    /**
+     * Draw the subscribed roasters on the home screen, under the three tiles,
+     * and the empty library's BROWSE button. Fork-only (ccc/main). On by
+     * default: somebody who subscribed asked for the roaster. Off does not
+     * touch the home search, which shows a roaster's coffees only when
+     * somebody types. Carried in a backup like the other display settings.
+     */
+    showRoastersOnHome: true,
     /** Imported brewing-content fingerprints, backed up with their recipes. */
     importFingerprints: "",
     /**
