@@ -2,6 +2,7 @@ import React from "react";
 import {fireEvent, screen} from "@testing-library/react-native";
 
 import ReadyToBrewCard, {type ReadyToBrewCardProps} from "@/components/ReadyToBrewCard";
+import {accents} from "@/constants/colors";
 import {renderWithProviders} from "@/test-utils/render";
 import {measureReadyPicture} from "@/test-utils/pictureLayout";
 
@@ -52,7 +53,7 @@ function props(over: Partial<ReadyToBrewCardProps<typeof ITEM>> = {}): ReadyToBr
     return {
         item: ITEM,
         name: "Vinka",
-        accent: "accent",
+        accent: accents.coffee[0],
         freshnessLine: "At its peak",
         bagLine: "212 g left, about 11 brews",
         emphasised: true,

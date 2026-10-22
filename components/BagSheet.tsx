@@ -5,7 +5,8 @@ import {Text, XStack, YStack} from "tamagui";
 import DotMatrixText from "@/components/DotMatrixText";
 import RoastDayField from "@/components/RoastDayField";
 import XbrwSheet from "@/components/XbrwSheet";
-import {onAccent, palette} from "@/constants/colors";
+import type {Palette} from "@/constants/colors";
+import {useAppearance} from "@/hooks/useAppearance";
 import {
     BAG_BEAN_NAME_MAX,
     BAG_PRESETS,
@@ -80,16 +81,19 @@ type Props = {
     onRemove: () => void;
 };
 
-const fieldStyle = {
-    color: palette.text,
-    backgroundColor: palette.raised,
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 16
-};
+function fieldStyleFor(palette: Palette) {
+    return {
+        color: palette.text,
+        backgroundColor: palette.raised,
+        borderRadius: 12,
+        paddingHorizontal: 14,
+        paddingVertical: 12,
+        fontSize: 16
+    };
+}
 
 function Label({children}: {children: string}) {
+    const {palette} = useAppearance();
     return (
         <DotMatrixText fontSize={11} weight="bold" letterSpacing={1.6} color={palette.dim}>
             {children}
@@ -100,25 +104,28 @@ function Label({children}: {children: string}) {
 function Chip({label, spoken, selected, testID, onPress}: {
     label: string; spoken: string; selected: boolean; testID: string; onPress: () => void;
 }) {
+    const {palette, selection} = useAppearance();
     return (
         <XStack accessible accessibilityRole="radio" accessibilityLabel={spoken}
                 accessibilityState={{checked: selected}} testID={testID} onPress={onPress}
                 minHeight={44} minWidth={56} alignItems="center" justifyContent="center"
                 paddingHorizontal="$3" borderRadius="$4"
-                backgroundColor={selected ? palette.text : palette.raised}
-                borderWidth={1} borderColor={selected ? palette.text : palette.line}>
+                backgroundColor={selected ? selection.fill : palette.raised}
+                borderWidth={1} borderColor={selected ? selection.fill : palette.line}>
             <DotMatrixText fontSize={12} weight="bold" letterSpacing={1.2}
-                           color={selected ? palette.base : palette.text}>
+                           color={selected ? selection.ink : palette.text}>
                 {label}
             </DotMatrixText>
         </XStack>
     );
 }
 
-function ActionButton({label, spoken, testID, tone, filled, disabled, onPress}: {
-    label: string; spoken: string; testID: string; tone: string;
+function ActionButton({label, spoken, testID, tone, ink, filled, disabled, onPress}: {
+    label: string; spoken: string; testID: string; tone: string; ink?: string;
     filled?: boolean; disabled?: boolean; onPress: () => void;
 }) {
+    const appearance = useAppearance();
+    const {palette} = appearance;
     return (
         <XStack accessible accessibilityRole="button" accessibilityLabel={spoken}
                 accessibilityState={{disabled: disabled === true}} testID={testID}
@@ -128,7 +135,7 @@ function ActionButton({label, spoken, testID, tone, filled, disabled, onPress}: 
                 backgroundColor={filled === true ? tone : palette.raised}
                 borderWidth={filled === true ? 0 : 1} borderColor={palette.line}>
             <DotMatrixText fontSize={13} weight="bold" letterSpacing={1.5}
-                           color={filled === true ? onAccent.text : tone}>
+                           color={filled === true ? ink ?? appearance.onFill(tone).text : tone}>
                 {label}
             </DotMatrixText>
         </XStack>
@@ -157,6 +164,9 @@ function BagForm({
     tracker, bag, gramsLeft, suggestedRoastedOn, coffee, beanName, beanNameFixed,
     onSave, onFinish, onRemove, sizes, suggestedSize, priceFor
 }: Omit<Props, "open" | "onOpenChange" | "epoch">) {
+    const appearance = useAppearance();
+    const {palette} = appearance;
+    const fieldStyle = fieldStyleFor(palette);
     const advised = startingFigures(coffee);
     const startRest = bag?.restDays ?? advised.figures.restDays;
     const startPeak = bag?.peakDay ?? advised.figures.peakDay;
@@ -391,7 +401,8 @@ function BagForm({
 
                 <ActionButton label={sending ? "SEND TO BEANCONQUEROR" : "SAVE"}
                               spoken={sending ? "Save the bag and send it to Beanconqueror" : "Save bag"}
-                              testID="bag-save" tone={palette.text} filled disabled={!valid}
+                              testID="bag-save" tone={appearance.primary.fill} ink={appearance.primary.ink}
+                              filled disabled={!valid}
                               onPress={save}/>
                 {bag !== null && (
                     <XStack gap="$2">

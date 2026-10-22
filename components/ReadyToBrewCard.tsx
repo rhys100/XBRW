@@ -6,11 +6,12 @@ import DotIcon from "@/components/DotIcon";
 import DotMatrixText from "@/components/DotMatrixText";
 import RecipePhoto from "@/components/RecipePhoto";
 import {CARD_PHOTO_SIZE, PHOTO_GAP} from "@/library/recipePictureLayout";
-import {onAccent, palette} from "@/constants/colors";
+import {useAppearance} from "@/hooks/useAppearance";
 
 function ReadyText({name, freshnessLine, bagLine, measuring = false}: {
     name: string; freshnessLine?: string | null; bagLine?: string | null; measuring?: boolean;
 }) {
+    const {palette} = useAppearance();
     return <YStack flex={measuring ? undefined : 1} minWidth={0} gap="$1">
         <Text testID={measuring ? undefined : "ready-to-brew-name"} fontSize={16} fontWeight="600"
             color={palette.text} numberOfLines={measuring ? undefined : 2}>{name}</Text>
@@ -75,6 +76,10 @@ export default function ReadyToBrewCard<T>({
     item, name, accent, imageUri, freshnessLine, bagLine, emphasised,
     onOpen, onBrew, low, onReorder, moreLine, onMore, onDismiss
 }: ReadyToBrewCardProps<T>) {
+    const appearance = useAppearance();
+    const {palette} = appearance;
+    // The recipe's colour as this appearance draws it, with its own ink.
+    const {fill: accentFill, onAccent} = appearance.recipe(accent);
     const reorderUrl = low?.reorderUrl;
     // A photo that will not load is skipped rather than left as an empty
     // square, the rule `PodSection` follows. Keyed on the uri so a new coffee
@@ -144,8 +149,8 @@ export default function ReadyToBrewCard<T>({
                             minHeight={44} minWidth={72}
                             alignItems="center" justifyContent="center"
                             paddingHorizontal="$3" borderRadius="$4"
-                            backgroundColor={emphasised ? accent : palette.raised}
-                            borderWidth={1} borderColor={emphasised ? accent : palette.line}
+                            backgroundColor={emphasised ? accentFill : palette.raised}
+                            borderWidth={1} borderColor={emphasised ? accentFill : palette.line}
                             pressStyle={{opacity: 0.7, scale: 0.98}}>
                         <DotMatrixText fontSize={13} weight="bold" letterSpacing={1.6}
                                        color={emphasised ? onAccent.text : palette.dim}>
