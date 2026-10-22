@@ -9,6 +9,7 @@ import Recipe from "@/library/Recipe";
 import {chooseRecipe} from "@/library/roasterCatalogue";
 import type {FeedCoffee} from "@/library/roasterFeed";
 import type {Settings} from "@/library/Settings";
+import {withRoastAdvice} from "@/library/restPeak";
 
 /**
  * Putting a roaster catalogue coffee into the library.
@@ -77,7 +78,8 @@ export async function fetchCoffeeRecipe(
         ? {...bean, flavours: coffee.flavours}
         : bean;
     decorateImport(recipe, {
-        coffee: withFlavours, source: "import", tags: coffee.tags, colour: coffee.colour
+        coffee: withRoastAdvice(withFlavours, coffee.roast ?? {}),
+        source: "import", tags: coffee.tags, colour: coffee.colour
     });
     recipe.name = recipeName(coffee, chosen.size);
     return {recipe, size: chosen.size};
