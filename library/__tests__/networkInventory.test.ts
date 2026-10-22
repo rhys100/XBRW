@@ -155,6 +155,8 @@ const EXPECTED_CALLS: Record<string, number> = {
     "components/BrewMindBrowser.tsx": 1,
     "components/CatalogueParts.tsx": 2,
     "components/RoasterCoffeeRow.tsx": 1,
+    "components/RoasterStrip.tsx": 1,
+    "components/RoasterSearchRow.tsx": 1,
     "components/FromSection.tsx":  1,
     "components/HubRow.tsx":       1,
     "components/ImportResult.tsx": 1,
