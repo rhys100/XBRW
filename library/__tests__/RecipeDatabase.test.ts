@@ -108,6 +108,35 @@ describe("duplicating a recipe", () => {
         return recipe;
     }
 
+    it("keeps a roaster coffee's colour on a copy, and only then (ccc/main)", () => {
+        // A roaster's colour picked the accent for the coffee, so a copy of
+        // that coffee wears the same colour. Coffee metadata without a roaster
+        // (a pod) and no coffee at all both give the copy its own colour.
+        const database = new RecipeDatabase();
+        const ecuador = imported();
+        ecuador.coffee = {name: "Ecuador Vinka Farm", roaster: "Central Coast Coffee"};
+        ecuador.accentIndex = 3;
+        database.insertRecipe(ecuador);
+        const pod = imported();
+        pod.coffee = {name: "Kenya Sakami"};
+        pod.accentIndex = 3;
+        database.insertRecipe(pod);
+        const plain = imported();
+        plain.accentIndex = 3;
+        database.insertRecipe(plain);
+
+        database.duplicateRecipe(ecuador);
+        database.duplicateRecipe(pod);
+        database.duplicateRecipe(plain);
+
+        const copies = (database.retrieveAllRecipes() ?? []).filter((r) => r.source === "duplicate");
+        const copyOf = (coffee: string | undefined) => copies.find((r) => r.coffee?.name === coffee)!;
+        expect(copies).toHaveLength(3);
+        expect(copyOf("Ecuador Vinka Farm").accentIndex).toBe(3);
+        expect(copyOf("Kenya Sakami").accentIndex).not.toBe(3);
+        expect(copyOf(undefined).accentIndex).not.toBe(3);
+    });
+
     it("gives the copy a name that tells it apart from the original", () => {
         // The bug behind a library that filled up with what looked like the
         // same recipe six times. An imported recipe has an empty `name` --
