@@ -84,6 +84,8 @@ it("preserves one physical bag across two doses, refusal, cancellation, correcti
     forgetAppDatabase();
     new RecipeDatabase().insertRecipes(parsed.payload.recipes);
     const targetSettings = new Settings(new SqliteSettingsStorage());
+    // ccc/main ships the bag experiment on; this device starts from off.
+    targetSettings.set("bagExperimentEnabled", false);
     const restoredBags = new CoffeeBagDatabase();
     const restoredHistory = new BrewDatabase();
     expect(restoredBags.restoreInventory(inventory)).toEqual({added: 1, skippedRows: 0});

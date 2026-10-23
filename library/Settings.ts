@@ -298,8 +298,13 @@ export const DEFAULTS = {
     beanconquerorHandoff: false,
     /** Device-local experiment: only the editor's WRITE flow may place and write. */
     easyModeOneTapWrite: false,
-    /** Device-local opt-in; inventory survives when this is off. */
-    bagExperimentEnabled: false,
+    /**
+     * Device-local opt-in; inventory survives when this is off.
+     *
+     * Fork (ccc/main) only: on by default, because this build's owner tracks
+     * bags every day. Upstream ships it off. The switch still turns it off.
+     */
+    bagExperimentEnabled: true,
     bagTracker: "auto" as BagTrackerSetting,
     readyToBrewDismissedOn: "",
     /**
