@@ -375,3 +375,20 @@ question included). With no machine WRITE writes the card straight away as
 before. WRITE's spoken name with a machine is "Write to Easy Mode or card".
 The card limits still gate WRITE; Assign to Easy Mode in the more menu is
 unchanged.
+
+## Proposed: Easy Mode picker searches subscribed roasters
+
+Branch `feat/easy-mode-roaster-search`, stacked on `fix/easy-mode-slot-link`,
+not yet accepted into `develop`. A search in the Easy Mode CHANGE picker still
+lists library recipes first. Under them, FROM YOUR ROASTERS lists matching
+recipes from the subscribed roasters' cached feeds, one row per coffee and size
+(on sale first, sold out after, at most 30, leaving out links the library
+already holds). Naming the roaster lists all its coffees. Only cached feeds are
+read, so opening and searching the picker makes no request.
+
+Picking one fetches that size's recipe from xBloom and keeps it in the library
+the way ADD TO SHELF does (`addToLibrary`: saved new, or matched to the copy
+already there), then assigns the library copy so the slot's uuid link holds. An
+edited library copy is used as it is; the coffee's own screen is still where the
+roaster's latest is offered. A failed fetch keeps the picker open with a
+message.
