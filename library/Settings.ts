@@ -290,8 +290,13 @@ export const DEFAULTS = {
      * feature deserves, and it survives a relaunch like any other preference.
      */
     beanconquerorHandoff: false,
-    /** Device-local opt-in; inventory survives when this is off. */
-    bagExperimentEnabled: false,
+    /**
+     * Device-local opt-in; inventory survives when this is off.
+     *
+     * Fork (ccc/main) only: on by default, because this build's owner tracks
+     * bags every day. Upstream ships it off. The switch still turns it off.
+     */
+    bagExperimentEnabled: true,
     bagTracker: "auto" as BagTrackerSetting,
     readyToBrewDismissedOn: "",
     /**
