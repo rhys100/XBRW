@@ -1511,6 +1511,8 @@ describe("HomeScreen, opening one editor at a time", () => {
         bags.create(bagFixture({restDays: 7, peakDay: 11, bestUntilDay: 25}));
         bags.select(recipe.uuid, "bag-a", 1);
         const settings = new Settings(memoryStorage());
+        // ccc/main ships the bag experiment on; this test starts from off.
+        settings.set("bagExperimentEnabled", false);
         await renderWithProviders(<HomeScreen db={store([recipe])} settings={settings}/>);
         await screen.findByText("Selected bag");
         expect(screen.queryByTestId("ready-to-brew")).toBeNull();

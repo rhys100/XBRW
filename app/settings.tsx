@@ -796,7 +796,7 @@ export default function SettingsScreen({settings}: Props) {
                         description="Needs a version of Beanconqueror that can read the link. Older ones will say they do not recognise it."
                         value={beanconquerorHandoff} onChange={changeHandoff}/>
                     <SettingsToggleRow label="Coffee bags"
-                        description="Experimental bag tracking, freshness estimates and brew suggestions. Off by default and may not stay in the app."
+                        description="Experimental bag tracking, freshness estimates and brew suggestions. On in this build; it may not stay in the app."
                         value={bagExperimentEnabled} onChange={changeBagExperiment}/>
                     {bagExperimentEnabled && <SettingsChoiceRow label="Coffee bag tracker"
                         description="Auto follows the Beanconqueror handoff preference. There is no live synchronisation."

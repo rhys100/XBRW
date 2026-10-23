@@ -635,7 +635,8 @@ describe("SettingsScreen", () => {
         bags.create(bagFixture());
         bags.correct("bag-a", 100);
         const settings = new Settings(memoryStorage());
-        expect(settings.get("bagExperimentEnabled")).toBe(false);
+        // ccc/main ships the bag experiment on; this test starts from off.
+        settings.set("bagExperimentEnabled", false);
         mockExportBackup.mockResolvedValue({ok: true});
         await renderWithProviders(<SettingsScreen settings={settings}/>);
         await fireEvent.press(screen.getByRole("button", {name: /^Back up my recipes,/}));
@@ -699,6 +700,8 @@ describe("SettingsScreen", () => {
             mockApplyRestore.mockReturnValue({status: "restored", added: 0});
             const settings = new Settings(memoryStorage());
             settings.set("bagTracker", "xbrw");
+            // ccc/main ships the bag experiment on; this device starts from off.
+            settings.set("bagExperimentEnabled", false);
             await renderWithProviders(<SettingsScreen settings={settings}/>);
             await fireEvent.press(screen.getByRole("button", {name: /^Restore from a backup,/}));
             await fireEvent(screen.getByLabelText(/settings from this backup/i), "checkedChange", true);
@@ -1652,7 +1655,9 @@ describe("SettingsScreen", () => {
             settings.set("labsUnlocked", true);
             const bags = new CoffeeBagDatabase();
             bags.create(bagFixture());
-            expect(settings.get("bagExperimentEnabled")).toBe(false);
+            expect(settings.get("bagExperimentEnabled")).toBe(true);
+            // ccc/main ships the bag experiment on; this test starts from off.
+            settings.set("bagExperimentEnabled", false);
             await renderWithProviders(<SettingsScreen settings={settings}/>);
             await fireEvent.press(screen.getByRole("switch", {name: "Coffee bags"}));
             expect(settings.get("bagExperimentEnabled")).toBe(true);
@@ -1668,6 +1673,8 @@ describe("SettingsScreen", () => {
             });
             const settings = new Settings(memoryStorage());
             settings.set("labsUnlocked", true);
+            // ccc/main ships the bag experiment on; this test starts from off.
+            settings.set("bagExperimentEnabled", false);
             await renderWithProviders(<SettingsScreen settings={settings}/>);
             await fireEvent.press(screen.getByRole("switch", {name: "Coffee bags"}));
             expect(settings.get("bagExperimentEnabled")).toBe(false);
@@ -1753,6 +1760,8 @@ describe("SettingsScreen", () => {
                  dotMatrixProfile: true}
             ));
             mockApplyRestore.mockReturnValue({status: "restored", added: 1});
+            // ccc/main ships the bag experiment on; this device starts from off.
+            new Settings(storage).set("bagExperimentEnabled", false);
             await renderWithProviders(<SettingsScreen settings={new Settings(storage)}/>);
 
             await fireEvent.press(screen.getByRole("button",

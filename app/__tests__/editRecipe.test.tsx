@@ -255,6 +255,8 @@ describe("experimental bag controls", () => {
     }
 
     it("does not open a bag store while the experiment is off", async () => {
+        // ccc/main ships the bag experiment on; this test starts from off.
+        mockSettings = {bagExperimentEnabled: false};
         const module = jest.requireActual("@/library/CoffeeBagDatabase");
         const open = jest.spyOn(module, "sharedBagDatabase");
         await renderEditor();
