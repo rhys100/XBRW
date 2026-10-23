@@ -5,6 +5,7 @@ import {Pressable, ScrollView} from "react-native";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
 import {Text, XStack, YStack} from "tamagui";
 
+import BagSheet, {type BagSheetResult} from "@/components/BagSheet";
 import BrewStageLadder from "@/components/BrewStageLadder";
 import {
     BuySection, CatalogueStatus, Chip, CoffeeBadgeTag, DetailPhoto, PageLinkRow, WatchToggle
@@ -21,6 +22,11 @@ import router from "@/hooks/steadyRouter";
 import {useLiveBrew} from "@/hooks/useLiveBrew";
 import {sharedSettings, useSetting} from "@/hooks/useSetting";
 import {assignAccent, resolveAccent} from "@/library/accent";
+import {sharedBagDatabase, type BagFactsStore} from "@/library/CoffeeBagDatabase";
+import {
+    BAG_BEAN_NAME_MAX, BAG_NAME_MAX, newBag, resolveBagTracker, roastDayFromCoffee
+} from "@/library/coffeeBag";
+import {bagFormFor, catalogueAdvice, catalogueBagInput} from "@/library/roasterBag";
 import {rememberPrint} from "@/library/importRefresh";
 import type Recipe from "@/library/Recipe";
 import {
@@ -107,13 +113,14 @@ function Action({label, spoken, testID, primary = false, disabled = false, onPre
  * latest. Three actions, because a catalogue is for deciding: brew it now
  * without keeping it, add it to the library, or put it on a shelf.
  */
-export default function RoasterCoffeeScreen({settings, feedUrl, coffeeId, library, shelves}: {
+export default function RoasterCoffeeScreen({settings, feedUrl, coffeeId, library, shelves, bagStore}: {
     /** Injected by tests; production reads the route and the real stores. */
     settings?: Settings;
     feedUrl?: string;
     coffeeId?: string;
     library?: LibraryDeps;
     shelves?: () => string[];
+    bagStore?: () => Pick<BagFactsStore, "createAndSelect">;
 } = {}) {
     const appearance = useAppearance();
     const {palette, selection} = appearance;
@@ -148,6 +155,15 @@ export default function RoasterCoffeeScreen({settings, feedUrl, coffeeId, librar
     const [retry, setRetry] = useState(0);
     const [loaded, setLoaded] = useState<Loaded | null>(null);
     const [pendingAt, setPendingAt] = useState<{request: string; value: Pending} | null>(null);
+    // Fork-only (ccc/main): with the bag experiment on, ADD TO SHELF asks for
+    // the bag first, in upstream's own bag form filled from the catalogue,
+    // and the bag is made, linked and chosen for the recipe once it is shelved.
+    const [bagsOn] = useSetting("bagExperimentEnabled", store);
+    const [bagTrackerSetting] = useSetting("bagTracker", store);
+    const [beanconquerorHandoff] = useSetting("beanconquerorHandoff", store);
+    const tracker = resolveBagTracker(bagTrackerSetting, beanconquerorHandoff);
+    const [bagEpoch, setBagEpoch] = useState(0);
+    const [bagAt, setBagAt] = useState<{request: string; open: boolean; input: BagSheetResult | null} | null>(null);
     const [namingAt, setNamingAt] = useState<string | null>(null);
     const action = useRef<AbortController | null>(null);
     const chosen = coffee === undefined ? undefined : chooseRecipe(coffee, size);
@@ -155,6 +171,9 @@ export default function RoasterCoffeeScreen({settings, feedUrl, coffeeId, librar
     const pending = pendingAt?.request === request ? pendingAt.value : null;
     const naming = namingAt === request;
     if (pendingAt !== null && pendingAt.request !== request) setPendingAt(null);
+    const bagOpen = bagAt?.request === request && bagAt.open;
+    const bagInput = bagAt?.request === request ? bagAt.input : null;
+    if (bagAt !== null && bagAt.request !== request) setBagAt(null);
     if (namingAt !== null && namingAt !== request) setNamingAt(null);
 
     function setPending(value: Pending | null) {
@@ -208,7 +227,7 @@ export default function RoasterCoffeeScreen({settings, feedUrl, coffeeId, librar
     const buying = buyOptions(cached.feed.roaster, coffee);
     const title = detailTitle(coffee.name);
     const taste = tasteOf(coffee);
-    const covered = ratingNoteOpen || naming || (pending !== null && pending.kind === "shelf");
+    const covered = ratingNoteOpen || bagOpen || naming || (pending !== null && pending.kind === "shelf");
     const watched = new Set(alerts?.watch ?? []);
     const watchingCoffee = watched.has(coffeeKey(coffee));
     // The bags being watched, by bag key, for the BUY section's switches.
@@ -276,8 +295,30 @@ export default function RoasterCoffeeScreen({settings, feedUrl, coffeeId, librar
         }
         setPending(null);
         setNaming(false);
+        setBagAt(null);
         notify({tone: "success", message: `Added to ${shelf}.`});
+        if (bagInput !== null) startBag(pending.recipe, bagInput);
         return true;
+    }
+
+    /** ADD TO SHELF: the bag form first while the bag experiment is on. */
+    function askForShelf() {
+        if (!bagsOn) {
+            void add();
+            return;
+        }
+        setBagEpoch((epoch) => epoch + 1);
+        setBagAt({request, open: true, input: null});
+    }
+
+    function startBag(shelved: Recipe, input: BagSheetResult) {
+        try {
+            (bagStore ?? sharedBagDatabase)().createAndSelect(
+                newBag(catalogueBagInput(input, tracker)), shelved.uuid, Date.now());
+        } catch (error) {
+            console.warn("Could not save the catalogue bag.", error);
+            notify({tone: "error", message: "The recipe is on the shelf, but the bag could not be saved."});
+        }
     }
 
     async function brewNow() {
@@ -468,13 +509,27 @@ export default function RoasterCoffeeScreen({settings, feedUrl, coffeeId, librar
                                         primary disabled={recipe === null} onPress={() => void brewNow()}/>
                                 <Action label="ADD TO SHELF" spoken="Add to shelf"
                                         testID="roaster-coffee-shelf" disabled={recipe === null}
-                                        onPress={() => void add()}/>
+                                        onPress={askForShelf}/>
                             </YStack>
                         )}
                     </YStack>
                 </ScrollView>
             </YStack>
 
+            {bagsOn && <BagSheet open={bagOpen} epoch={bagEpoch}
+                      onOpenChange={(next) => { if (!next) setBagAt(null); }}
+                      tracker={tracker} bag={null} gramsLeft={null}
+                      coffee={recipe?.coffee ?? catalogueAdvice(coffee)}
+                      suggestedRoastedOn={roastDayFromCoffee(coffee.coffee.roastingDate)}
+                      beanName={(coffee.coffee.name ?? coffee.name).slice(0, BAG_BEAN_NAME_MAX)}
+                      suggestedName={coffee.name.slice(0, BAG_NAME_MAX)}
+                      {...bagFormFor(coffee)}
+                      onSave={(result) => {
+                          setBagAt({request, open: false, input: result});
+                          void add();
+                      }}
+                      onFinish={() => setBagAt(null)}
+                      onRemove={() => setBagAt(null)}/>}
             <ShelfChoiceSheet open={pending?.kind === "shelf" && !naming}
                               shelves={pending?.kind === "shelf" ? (shelves ?? (() => realUserShelves(store)))() : []}
                               onOpenChange={(next) => {

@@ -9,7 +9,22 @@ import type {BagManager} from "@/hooks/useBagManager";
 import {BAG_BEAN_NAME_MAX, balanceLine, roastDayFromCoffee} from "@/library/coffeeBag";
 import {freshnessOf, freshnessProblem} from "@/library/restPeak";
 import {httpsUrl} from "@/library/podCoffee";
+import {sharedSettings} from "@/hooks/useSetting";
+import {reorderLink} from "@/library/roasterBuy";
 import type Recipe from "@/library/Recipe";
+
+/**
+ * Fork-only (ccc/main): REORDER opens the roaster's buy link for the same bag
+ * size when a subscribed catalogue still sells it. A settings store that
+ * cannot be read costs only that link; the coffee's page is the fallback.
+ */
+function catalogueReorder(coffeeUrl: string | undefined, grams: number | undefined): string | undefined {
+    try {
+        return reorderLink(sharedSettings(), coffeeUrl, grams);
+    } catch {
+        return undefined;
+    }
+}
 
 export function BagChoice({manager}: {manager: BagManager}) {
     const {palette} = useAppearance();
@@ -36,7 +51,8 @@ export function BagAbout({manager, recipe}: {manager: BagManager; recipe: Recipe
         balance={reading.balance} warning={reading.warning}
         freshness={selected && now !== null ? freshnessOf(selected, now) : null}
         problem={selected && now !== null ? freshnessProblem(selected, now) : null}
-        reorderUrl={httpsUrl(recipe.coffee?.url) ?? httpsUrl(recipe.recipeUrl)}
+        reorderUrl={catalogueReorder(recipe.coffee?.url, selected?.sizeGrams)
+            ?? httpsUrl(recipe.coffee?.url) ?? httpsUrl(recipe.recipeUrl)}
         onOpenSheet={() => { if (selected) manager.edit(selected); }}
         onChoose={manager.choose} onInventory={manager.inventory}
         onUnlink={selected ? manager.unlink : undefined}
