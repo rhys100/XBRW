@@ -392,3 +392,17 @@ already there), then assigns the library copy so the slot's uuid link holds. An
 edited library copy is used as it is; the coffee's own screen is still where the
 roaster's latest is offered. A failed fetch keeps the picker open with a
 message.
+
+## Proposed: catalogue rows and library cards say what the bean is
+
+Branch `feat/catalogue-row-details`, not yet accepted into `develop`.
+
+A roaster's catalogue row now reads: name, then "Country · Farm" (the region
+when there is no farm), then "Variety · Process", then the roast level and
+flavours. Empty parts are skipped, so rows can differ in height. The bag-sizes
+line and its spoken part are gone from the row; the coffee's own screen still
+lists bags and prices.
+
+A library recipe card with no note now uses its second line for "Variety ·
+Process" from the recipe's coffee. A note still wins. The card keeps its two
+lines of prose and its height.
