@@ -102,6 +102,7 @@ import {canWriteToCard} from "@/library/cardLimits";
 import {
     applyQuickEdit,
     quickEditProblems,
+    withoutDose,
     type QuickEditAdjustments
 } from "@/library/quickEdit";
 import {asTemperatureUnit, type TemperatureUnit} from "@/library/units";
@@ -261,6 +262,7 @@ function HomeQuickEditSheet({
     onOpenChange,
     onChange,
     onBrew,
+    onSaveDose,
     temperatureUnit,
     bagManager
 }: {
@@ -268,6 +270,7 @@ function HomeQuickEditSheet({
     onOpenChange: (open: boolean) => void;
     onChange: (adjustments: QuickEditAdjustments) => void;
     onBrew: () => void;
+    onSaveDose: (dose: number) => void;
     temperatureUnit: TemperatureUnit;
     bagManager: BagManager;
 }) {
@@ -280,7 +283,7 @@ function HomeQuickEditSheet({
 
     return (
         <XbrwSheet open={recipe !== null} onOpenChange={onOpenChange}
-                   title="QUICK EDIT" heightPercent={72} covered={bagManager.covered}>
+                   title="QUICK EDIT" heightPercent={84} covered={bagManager.covered}>
             {recipe !== null && (
                 <YStack flex={1} gap="$2">
                 <BagChoice manager={bagManager}/>
@@ -290,6 +293,7 @@ function HomeQuickEditSheet({
                     accent={accent}
                     temperatureUnit={temperatureUnit}
                     onChange={onChange}
+                    onSaveDose={onSaveDose}
                     renderBrewAction={(brewability) => (
                         <Button
                             testID="home-quick-edit-brew"
@@ -1297,6 +1301,19 @@ export default function HomeScreen({db, beanStore, settings}: Props) {
         }
     }
 
+    function saveQuickEditDose(dose: number): void {
+        if (quickEdit === null) return;
+        const saved = library.saveAtDose(quickEdit.recipe, dose);
+        if (saved === null) {
+            notify({tone: "error", message: "Could not save the recipe."});
+            return;
+        }
+        // The sheet now edits the saved recipe, so the dose is no longer an
+        // adjustment; anything else moved for this brew stays moved.
+        setQuickEdit({recipe: saved, adjustments: withoutDose(quickEdit.adjustments)});
+        notify({tone: "success", message: `Saved at ${dose} g.`});
+    }
+
     function openBrew(recipe: Recipe, adjustments?: QuickEditAdjustments, bagId?: string): boolean {
         // There is one machine, and `LiveBrewProvider.start` refuses a second
         // run while the first is still going. Without this the tap would push
@@ -1915,6 +1932,7 @@ export default function HomeScreen({db, beanStore, settings}: Props) {
                 }}
                 onChange={onQuickEditChange}
                 onBrew={brewQuickEdit}
+                onSaveDose={saveQuickEditDose}
                 temperatureUnit={temperatureUnit}/>
 
             <BagManagementSheets manager={bagManager} recipe={quickEdit?.recipe ?? null}/>
