@@ -36,6 +36,8 @@ jest.mock("@/components/XbrwToast", () => ({
 
 function subscribed() {
     const settings = memorySettings();
+    // ccc/main ships the bag experiment on; these tests start from off.
+    settings.set("bagExperimentEnabled", false);
     const {feed, body} = feedBody([{id: "a", available: false}, {id: "b"}]);
     subscribe(settings, FEED_URL, feed, body, 1000);
     return settings;
@@ -57,6 +59,8 @@ function subscribedTo(
     }
     const body = JSON.stringify(parsed);
     const settings = memorySettings();
+    // ccc/main ships the bag experiment on; these tests start from off.
+    settings.set("bagExperimentEnabled", false);
     subscribe(settings, FEED_URL, parseRoasterFeed(body)!, body, 1000);
     return settings;
 }
@@ -670,5 +674,48 @@ describe("the bottom inset", () => {
     it("is cleared at the end of a roaster's coffees", async () => {
         await renderWithProviders(<RoasterScreen settings={subscribed()} feedUrl={FEED_URL}/>);
         expect(endPadding("roaster-list")).toBe(TEST_INSETS.bottom + 24);
+    });
+});
+
+describe("ADD TO SHELF with the coffee bag experiment on (fork-only)", () => {
+    async function openWithBags() {
+        const settings = subscribedTo([{id: "b"}], {}, {b: "Light"});
+        settings.set("bagExperimentEnabled", true);
+        const library = memoryLibrary();
+        const createAndSelect = jest.fn();
+        await renderWithProviders(
+            <RoasterCoffeeScreen settings={settings} feedUrl={FEED_URL} coffeeId="b"
+                                 library={library.deps} shelves={() => ["Pantry"]}
+                                 bagStore={() => ({createAndSelect})}/>
+        );
+        await waitFor(() => expect(screen.queryByTestId("roaster-coffee-loading")).toBeNull());
+        return {library, createAndSelect};
+    }
+
+    it("asks for the bag in the catalogue's sizes, then makes and chooses it for the shelved recipe", async () => {
+        const {library, createAndSelect} = await openWithBags();
+        await fireEvent.press(screen.getByTestId("roaster-coffee-shelf"));
+        expect(await screen.findByTestId("bag-size-320")).toBeTruthy();
+        expect(screen.getByTestId("bag-size-160")).toBeTruthy();
+        expect(screen.queryByTestId("bag-size-250")).toBeNull();
+        expect(screen.getByLabelText("Bag name").props.value).not.toBe("");
+        await waitFor(async () => {
+            if (library.all().length === 0) await fireEvent.press(screen.getByTestId("bag-save"));
+            await fireEvent.press(screen.getByTestId("shelf-choice-Pantry"));
+            expect(library.find("b-18g")?.tags[0]).toBe("Pantry");
+        }, {timeout: SHEET_PRESS_TIMEOUT});
+        expect(createAndSelect).toHaveBeenCalledTimes(1);
+        const [bag, recipeUuid] = createAndSelect.mock.calls[0];
+        expect(recipeUuid).toBe(library.find("b-18g")?.uuid);
+        expect(bag).toMatchObject({sizeGrams: 320});
+    });
+
+    it("makes no bag when the bag form is closed, and shelves nothing", async () => {
+        const {library, createAndSelect} = await openWithBags();
+        await fireEvent.press(screen.getByTestId("roaster-coffee-shelf"));
+        expect(await screen.findByTestId("bag-save")).toBeTruthy();
+        expect(screen.queryByTestId("shelf-choice-Pantry")).toBeNull();
+        expect(library.all()).toEqual([]);
+        expect(createAndSelect).not.toHaveBeenCalled();
     });
 });

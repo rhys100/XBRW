@@ -70,6 +70,11 @@ type Props = {
     /** The size picked when adding, in place of 250 g. */
     suggestedSize?: number;
     /**
+     * Fork-only (ccc/main): the bag name to start from when adding, e.g. the
+     * catalogue coffee's name. Still editable; absent starts empty.
+     */
+    suggestedName?: string;
+    /**
      * What a bag of this size costs, from the roaster's catalogue. Given, the
      * price is asked for in both tracker modes and filled in from the chosen
      * size until the person types their own.
@@ -160,7 +165,7 @@ function priceNumber(text: string): number | undefined {
  */
 function BagForm({
     tracker, bag, gramsLeft, suggestedRoastedOn, coffee, beanName,
-    onSave, onFinish, onRemove, sizes, suggestedSize, priceFor, onAddBean, beanBusy = false
+    onSave, onFinish, onRemove, sizes, suggestedSize, suggestedName, priceFor, onAddBean, beanBusy = false
 }: Omit<Props, "open" | "onOpenChange" | "epoch">) {
     const {palette} = useAppearance();
     const fieldStyle = {...fieldLayout, color: palette.text, backgroundColor: palette.raised};
@@ -180,7 +185,7 @@ function BagForm({
     const [price, setPrice] = useState(startPrice !== undefined ? String(startPrice) : "");
     // Follows the chosen size until the person types a price of their own.
     const [priceTyped, setPriceTyped] = useState(false);
-    const [name, setName] = useState(bag?.name ?? "");
+    const [name, setName] = useState(bag?.name ?? suggestedName ?? "");
     const [externalName, setExternalName] = useState(bag?.beanName ?? "");
     const [left, setLeft] = useState(gramsLeft !== null ? String(gramsLeft) : "");
     const [leftTouched, setLeftTouched] = useState(false);
