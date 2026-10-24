@@ -460,3 +460,19 @@ lists bags and prices.
 A library recipe card with no note now uses its second line for "Variety ·
 Process" from the recipe's coffee. A note still wins. The card keeps its two
 lines of prose and its height.
+
+## Proposed: Easy Mode slot from WRITE places and writes in one tap
+
+Branch `feat/easy-mode-replace-write`, stacked on `feat/write-chooser`, not yet
+accepted into `develop`. WRITE, Easy Mode slot no longer opens Easy Mode with a
+"Choose a slot for" panel above the cards, and no longer drops the recipe into
+the first empty slot. The screen names the recipe ("PLACING", then its name)
+and each slot card says REPLACE, or ADD when the slot is empty. Choosing one
+assigns the recipe (still through the library, as before) and writes all three
+slots straight away, the other two from their remembered drafts. With no
+connection it connects first. When the write cannot start (for example the
+first write still needs all three slots, or the machine does not connect) the
+normal screen comes back with the reason, starting "<recipe> is in slot A.".
+After the write is confirmed the success screen shows, then the app goes back
+to the editor with "Written. <recipe> is in slot A.". Opening Easy Mode any
+other way keeps CHANGE and WRITE TO MACHINE.
