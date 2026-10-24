@@ -6,8 +6,8 @@ never goes into a branch meant for upstream.
 
 - Upstream: https://github.com/hessius/XBRW (`upstream`, branch `develop`)
 - Fork: https://github.com/rhys100/XBRW (`origin`)
-- Base of this build: upstream `develop` at `e0d29d7` (23 Oct 2026, after #264 and #266)
-- The build before this one is kept at the tag `archive/ccc-main-2026-10-23` (`5041763`)
+- Base of this build: upstream `develop` at `f48738f` (25 Oct 2026, after #267)
+- The build before this one is kept at the tag `archive/ccc-main-2026-10-24` (`c0fd4b2`); the one before that at `archive/ccc-main-2026-10-23` (`5041763`)
 
 Each row says what the feature does, our pull request if there is one, what
 upstream decided, whether `ccc/main` keeps our version, and the main files.
@@ -24,7 +24,6 @@ Test files and docs are left out of the file lists.
 
 | Feature | What it does | Our PR | Upstream decision | ccc/main keeps ours | Files |
 |---|---|---|---|---|---|
-| Dose presets and save as this dose | One-tap dose chips in quick edit, and SAVE AS this dose. | https://github.com/hessius/XBRW/pull/239 | Pending (open). hessius is writing his own version on `feat/2.2.0-dose-shortcuts-20261023`, not merged yet. | Yes, merged as is | `components/QuickEditPanel.tsx`, `app/index.tsx`, `hooks/useRecipeLibrary.ts` |
 | "Updates paused" for a paused feed with nothing cached | A paused roaster whose coffees were never loaded says Updates paused, not Loading coffees. | None (from hessius's preview) | Pending backport by hessius | Yes | `library/subscriptionStatus.ts` |
 | OPEN RECIPE label (`fix/open-recipe-label`) | The catalogue coffee's primary action says what it does: it opens the recipe, unsaved. | None | Not yet offered | Yes | `app/roasterCoffee.tsx` |
 | Easy Mode slots keep their library link (`fix/easy-mode-slot-link`) | Putting an unsaved catalogue or link recipe in a slot saves it first, so the slot does not later say REMOVED FROM LIBRARY. Old slots reconnect by share link. | None | Not yet offered | Yes | `app/editRecipe.tsx`, `components/EasyModeSlots.tsx`, `library/slots/slotSource.ts` |
@@ -32,7 +31,7 @@ Test files and docs are left out of the file lists.
 | Easy Mode WRITE places and writes in one tap (`feat/easy-mode-replace-write`) | From WRITE, Easy Mode shows the recipe being placed and REPLACE or ADD on each slot. Choosing one assigns it and writes all three slots, connecting first if needed. Stacked on the write chooser; only worth offering with it. | None | Not yet offered | Yes | `app/easyMode.tsx`, `components/EasyModeSlots.tsx`, `components/EasyModeSlotCard.tsx`, `hooks/useEasyModeSlots.ts`, `app/editRecipe.tsx` |
 | Roaster coffees in the Easy Mode slot picker (`feat/easy-mode-roaster-search`) | The slot picker's search also finds subscribed roasters' coffees and saves the one picked. | None | Not yet offered | Yes | `app/easyMode.tsx`, `components/EasyModeSlots.tsx`, `library/roasterSearch.ts` |
 | Catalogue rows show origin, variety and process (`feat/catalogue-row-details`) | A roaster's coffee rows show origin, variety and process instead of bag sizes, and a home card with no note shows the bean's variety and process. | None | Not yet offered | Yes | `components/RoasterCoffeeRow.tsx`, `components/RecipeCard.tsx`, `library/coffeeDetails.ts` |
-| Readable filled button labels (`fix/primary-button-ink`) | Labels on filled buttons (BUY, OPEN RECIPE, SAVE, WRITE TO MACHINE and others) use the body face. Doto's dark dots on a light fill wash out on a phone. | None | Not yet offered | Yes | `components/FillLabel.tsx`, `components/CatalogueParts.tsx`, `app/roasterCoffee.tsx`, `app/hubRecipe.tsx`, `app/easyMode.tsx`, `components/EasyModeSlots.tsx`, `components/BagSheet.tsx`, `components/HubSaveBar.tsx`, `components/NameShelfSheet.tsx`, `components/RenameSheet.tsx` |
+| Readable filled button labels (`fix/primary-button-ink`) | Labels on filled controls use the body face: BUY, OPEN RECIPE, SAVE, WRITE TO MACHINE, the editor's recipe-coloured BREW and its arrow, the selected deck tab, accent WRITE, selected rail, bag-size and history chips, the home card's BREW, and the white, red and green sheet buttons. Doto's dark dots on a light fill wash out on a phone. Unfilled and unselected states keep Doto. | None | Not yet offered | Yes | `components/FillLabel.tsx`, `components/SplitBrewButton.tsx`, `components/DeckSwitch.tsx`, `app/editRecipe.tsx`, `components/RailChip.tsx`, `components/ReadyToBrewCard.tsx`, `components/CatalogueParts.tsx`, `app/roasterCoffee.tsx`, `app/hubRecipe.tsx`, `app/easyMode.tsx`, `components/EasyModeSlots.tsx`, `components/BagSheet.tsx`, `components/HubSaveBar.tsx`, `components/NameShelfSheet.tsx`, `components/RenameSheet.tsx`, and the sheet buttons in `components/*Sheet.tsx`, `components/ShelfPickerBar.tsx`, `components/NewerVersionPrompt.tsx`, `components/BrewHistoryControls.tsx` |
 
 ## Fork-only (never offered)
 
@@ -43,13 +42,15 @@ Test files and docs are left out of the file lists.
 | Reorder the same bag size | A bag's REORDER opens the subscribed catalogue's buy link for the same size, else the coffee's page. | None (was in hessius's preview) | Never offered | Yes, on hessius's bag section | `components/BagManagement.tsx` |
 | FROM names the roaster | ABOUT's FROM names the roaster and XPOD labels the roaster's xBloom profile name. | None (part of #237's first version) | Never offered on its own | Yes | `components/FromSection.tsx`, `components/PodSection.tsx` |
 | FLAVOUR leads with flavours | ABOUT's FLAVOUR shows a coffee's flavours first, the roaster's notes under them. | None | Never offered | Yes | `components/PodCoffeeRows.tsx`, `library/coffeeDetails.ts` |
-| Chosen size chip colours | The chosen 15G or 18G chip on a roaster's coffee uses the selection colours (readable in Light) and the body face. | None | Never offered | Yes | `app/roasterCoffee.tsx` |
+| Save as this dose | SAVE AS under the quick-edit explainer, in the editor and on the home sheet, writes the moved dose into the recipe (stages rescaled, bypass scaled by upstream's `scaleBypassForDose`). The editor writes at once only when nothing else waits for SAVE. | Was part of https://github.com/hessius/XBRW/pull/239 | Left out of #267 | Yes, rebuilt on #267's dose shortcuts | `library/quickEdit.ts` (`rescaleDose`, `recipeAtDose`, `canSaveDose`, `withoutDose`), `components/QuickEditPanel.tsx`, `app/editRecipe.tsx`, `app/index.tsx`, `hooks/useRecipeLibrary.ts` |
+| Chosen size chip colours | The chosen 15G or 18G chip on a roaster's coffee uses the selection colours (readable in Light). Its body-face label now comes from `fix/primary-button-ink`. | None | Never offered | Yes | `app/roasterCoffee.tsx` |
 | Home roaster tests order | Keeps the home roaster tests above upstream's machine switching block, which leaks into later tests. | None | Never offered | Yes | `app/__tests__/index.test.tsx` |
 
 ## Upstream adapted (we use his version)
 
 | Feature | What it does | Our PR | Upstream decision | ccc/main keeps ours | Files |
 |---|---|---|---|---|---|
+| Dose shortcuts and proportional bypass | One-tap 15, 18 and 20 g chips (plus the recipe's dose) in quick edit, with the bypass scaling with the dose. | https://github.com/hessius/XBRW/pull/239 | Adapted as https://github.com/hessius/XBRW/pull/267; ours closed. He dropped SAVE AS. | No, his version. SAVE AS is kept fork-only (above). | `components/QuickEditPanel.tsx`, `library/quickEdit.ts`, `library/bypassLimits.ts`, `hooks/useRecipeEditor.ts` |
 | Bag tracker, rest and peak, Ready to brew | Coffee bags, freshness guidance and the home Ready to brew card. | https://github.com/hessius/XBRW/pull/238, https://github.com/hessius/XBRW/pull/241, https://github.com/hessius/XBRW/pull/242 | Adapted as https://github.com/hessius/XBRW/pull/266 behind a default-off Labs switch; ours closed as superseded | No. His model (bags shared across recipes, explicit No bag, run accounting). Our old bag data migrates from the `coffee_bags` table. | `library/CoffeeBagDatabase.ts`, `library/coffeeBag.ts`, `library/bagMigration.ts`, `components/BagSheet.tsx`, `components/BagManagement.tsx`, `components/ReadyToBrewCard.tsx`, `hooks/useBagManager.ts` |
 | Magenta primary buttons | Primary actions filled in the brand colour. | https://github.com/hessius/XBRW/pull/243 | Adapted inside https://github.com/hessius/XBRW/pull/264 (appearance themes) | No | `constants/colors.ts`, `hooks/useAppearance.tsx` |
 | Roaster catalogue from a feed link | Feed link, subscribe offer, catalogue and coffee page. | https://github.com/hessius/XBRW/pull/237 | Adapted as https://github.com/hessius/XBRW/pull/263 | No | `app/roaster*.tsx`, `library/roaster*.ts` |
@@ -67,7 +68,7 @@ Test files and docs are left out of the file lists.
 
 ## Rebuilding ccc/main after upstream moves
 
-These are the steps used for the 24 Oct 2026 rebuild. Use a worktree, never the
+These are the steps used for the 24 and 25 Oct 2026 rebuilds. Use a worktree, never the
 shared checkout.
 
 1. `git fetch upstream && git fetch origin`. If `origin/develop` is an ancestor of
@@ -82,9 +83,13 @@ shared checkout.
    with `git push --force-with-lease`. They are ours and not published upstream.
    Never force-push a branch with an open upstream PR without checking first.
 5. Start a fresh branch from `upstream/develop` and run `npm ci` if the lockfile moved.
-6. Merge the open upstream PRs we keep (now #239), then add the fork-only commits
-   (cherry-pick from the archive tag), then merge the fix branches with `--no-ff`.
-   `docs/release-2.2.0-changes.md` and `docs/copy.md` conflicts are both sides kept.
+6. Merge the open upstream PRs we keep (none since #239 became #267), then add the
+   fork-only commits (cherry-pick from the archive tag), then merge the fix branches
+   with `--no-ff`. `docs/release-2.2.0-changes.md` and `docs/copy.md` conflicts are
+   both sides kept. `app/roasterCoffee.tsx` conflicts: keep the bag functions and
+   call the action `openRecipe`; the size chip keeps the selection colours with a
+   `FillLabel`. `app/easyMode.tsx` and its test: keep both sides, then drop the
+   duplicate `SlotIndex` import and `mockAssign`, and close the roaster test block.
 7. Run `npx tsc --noEmit`, `npx eslint .` and `npx jest` (both platforms).
 8. Point `ccc/main` at the new head and push it with `--force-with-lease`.
 9. Build the APK: `gh workflow run android-preview.yml --repo rhys100/XBRW -f ref=ccc/main`,
