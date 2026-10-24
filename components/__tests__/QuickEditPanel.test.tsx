@@ -368,4 +368,53 @@ describe("QuickEditPanel", () => {
 
         expect(onChange).toHaveBeenCalledWith({});
     });
+
+    describe("SAVE AS this dose (fork-only)", () => {
+        async function drawWithSave(
+            adjustments: QuickEditAdjustments,
+            recipe: Recipe = coffeeRecipe(),
+            onSaveDose = jest.fn()
+        ) {
+            await renderWithProviders(
+                <QuickEditPanel recipe={recipe} adjustments={adjustments}
+                                accent={palette.brand} temperatureUnit="C"
+                                onChange={jest.fn()} onSaveDose={onSaveDose}/>
+            );
+            return onSaveDose;
+        }
+
+        it("offers no save when the host has not asked for one", async () => {
+            await draw({dose: 15});
+
+            expect(screen.queryByTestId("quick-edit-save-dose")).toBeNull();
+        });
+
+        it("offers no save until the dose has moved", async () => {
+            await drawWithSave({ratio: 17});
+
+            expect(screen.queryByTestId("quick-edit-save-dose")).toBeNull();
+        });
+
+        it("saves the dose a shortcut chose through the host", async () => {
+            const onSaveDose = await drawWithSave({dose: 15});
+
+            expect(screen.getByTestId("quick-edit-save-dose")).toHaveTextContent("SAVE AS 15 G");
+            await fireEvent.press(screen.getByLabelText("Save the recipe at 15 grams"));
+
+            expect(onSaveDose).toHaveBeenCalledWith(15);
+        });
+
+        it("refuses to save, and says why, when a stage would pass the machine's limit", async () => {
+            const recipe = coffeeRecipe();
+            recipe.pours = [
+                new Pour(1, 40, 88, 30, 0, 0, 0),
+                new Pour(2, 280, 88, 30, 0, 0, 0)
+            ];
+            await drawWithSave({dose: 18}, recipe);
+
+            expect(screen.queryByTestId("quick-edit-save-dose")).toBeNull();
+            expect(screen.getByTestId("quick-edit-problems"))
+                .toHaveTextContent(/Stage 2 pours 252 ml\. The most is 240 ml\./);
+        });
+    });
 });
