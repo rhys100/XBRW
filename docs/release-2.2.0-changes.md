@@ -397,3 +397,24 @@ Branch `fix/open-recipe-label`, not yet accepted into `develop`. A roaster
 coffee's primary action read BREW NOW but only opens the recipe in the editor,
 unsaved; the editor has its own BREW. It now reads OPEN RECIPE (spoken "Open
 recipe"). The test ID `roaster-coffee-brew` and the behaviour are unchanged.
+
+## Proposed: Easy Mode slots keep their library link
+
+Branch `fix/easy-mode-slot-link`, not yet accepted into `develop`.
+
+A slot links to its recipe by uuid. Catalogue, roaster and link recipes open
+unsaved, and each fetch mints a new uuid, so assigning one from the editor's
+Assign to Easy Mode left a slot that later read REMOVED FROM LIBRARY. The
+editor now saves such a recipe first (or uses the library's copy of the same
+share link when it brews exactly the same, the `planReimport` "same" test) and
+the slot snapshots the library uuid. A toast says "Saved to your library." A
+recipe a slot cannot hold is not saved; the existing error explains why.
+
+Existing slots reconnect for display: when a slot's uuid is not in the library,
+Easy Mode looks for the library copy of the same share link (preferring one
+that brews the same), then a link-less recipe with the same name and brew.
+Home slot markers still match by uuid only; USE UPDATED RECIPE relinks a slot.
+
+Easy Mode help now says only the first write needs all three recipes, since the
+phone keeps every written slot and resends the other two. With empty slots the
+WRITE reason names them ("Choose a recipe for slots B and C before writing").
