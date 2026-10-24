@@ -391,6 +391,17 @@ Neither host adds a save action, and closing discards the adjustment.
 | `quickEdit.dose.bypass` | `library/quickEdit.ts` | Added after the existing stage-volume explanation when dose rescales active bypass. | `Bypass water rescales to ${volume} ml, so the cup gets ${cup} ml.` |
 | `quickEdit.dose.bypass.limit` | `library/quickEdit.ts` | A bounded amount is not described as exactly proportional. | `Bypass limited to ${volume} ml. The cup gets ${cup} ml.` |
 
+On `ccc/main` only (fork-only), both hosts do add a save: SAVE AS writes the
+moved dose into the recipe, with stages and bypass rescaled, and leaves every
+other quick edit as a one-brew change.
+
+| ID | Source | Context — when the user sees this | Current text |
+|----|--------|-----------------------------------|--------------|
+| `quickEdit.saveDose.label` | `components/QuickEditPanel.tsx` | Button under the explainer once the dose has moved and still brews. | `SAVE AS ${saveDose} G` |
+| `quickEdit.saveDose.a11y` | `components/QuickEditPanel.tsx` (a11y) | (a11y) The same button. | `Save the recipe at ${saveDose} grams` |
+| `quickEdit.toast.savedDose` | `app/editRecipe.tsx`, `app/index.tsx` | Success toast after SAVE AS writes the recipe. | `Saved at ${dose} g.` |
+| `quickEdit.toast.doseForSave` | `app/editRecipe.tsx` | Info toast in the editor when other edits are pending, or the recipe is not in the library yet, so SAVE has to keep the new dose. | `Dose set to ${dose} g. Press SAVE to keep it.` |
+
 ### Editor action bar
 
 | ID | Source | Context — when the user sees this | Current text |

@@ -84,6 +84,54 @@ export function applyQuickEdit(recipe: Recipe, adjustments: QuickEditAdjustments
     return edited;
 }
 
+/**
+ * Change a recipe's dose in place, with the water following it: "Save as this
+ * dose" (fork-only).
+ *
+ * The same arithmetic a quick-edit dose uses. The ratio stays, every stage
+ * rescales in proportion and is rounded to whole millilitres that add up to
+ * dose times ratio, and a live bypass scales with upstream's
+ * `scaleBypassForDose`, held at its range. Temperatures, pauses and patterns
+ * are left as they were. A bypass the scaler refuses is left unchanged;
+ * `canSaveDose` keeps that case from reaching here.
+ */
+export function rescaleDose(recipe: Recipe, dose: number): void {
+    const bypass = quickEditBypass(recipe, {dose});
+    if (bypass?.ok) recipe.bypassVolume = bypass.volume;
+    recipe.dosage = dose;
+    recipe.autoFixPourVolumes();
+}
+
+/** A copy of `recipe` at `dose`, for writing back to the library. */
+export function recipeAtDose(recipe: Recipe, dose: number): Recipe {
+    const scaled = cloneRecipe(recipe);
+    rescaleDose(scaled, dose);
+    return scaled;
+}
+
+/**
+ * Whether the quick-edit dose can become the saved one.
+ *
+ * Only the dose is saved, so only the dose is judged: a ratio or grind moved
+ * for this brew stays a one-brew change and has no say over the recipe.
+ */
+export function canSaveDose(
+    recipe: Recipe,
+    adjustments: QuickEditAdjustments
+): adjustments is QuickEditAdjustments & {dose: number} {
+    return adjustments.dose !== undefined
+        && adjustments.dose !== recipe.dosage
+        && !recipe.isTea()
+        && quickEditProblems(recipe, {dose: adjustments.dose}).length === 0;
+}
+
+/** The adjustments left once the dose has been saved into the recipe. */
+export function withoutDose(adjustments: QuickEditAdjustments): QuickEditAdjustments {
+    const rest = {...adjustments};
+    delete rest.dose;
+    return rest;
+}
+
 export function quickEditRecordAdjustments(
     saved: Recipe,
     adjustments: QuickEditAdjustments

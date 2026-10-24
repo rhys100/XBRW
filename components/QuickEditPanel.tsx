@@ -7,6 +7,7 @@ import RailChip from "@/components/RailChip";
 import Stepper from "@/components/Stepper";
 import {useAppearance} from "@/hooks/useAppearance";
 import {
+    canSaveDose,
     describeAdjustment,
     describeGrind,
     describeKnobBaseline,
@@ -39,6 +40,12 @@ export type QuickEditPanelProps = {
     temperatureUnit: TemperatureUnit;
     onChange: (adjustments: QuickEditAdjustments) => void;
     renderBrewAction?: (brewability: QuickEditPanelBrewability) => React.ReactNode;
+    /**
+     * Makes the adjusted dose the recipe's own (fork-only SAVE AS). Absent,
+     * the panel offers no save: quick edit stays a one-brew change wherever a
+     * host has not said how a save is written.
+     */
+    onSaveDose?: (dose: number) => void;
 };
 
 type AdjustmentKey = keyof QuickEditAdjustments;
@@ -127,7 +134,7 @@ function baselineDetail(
 }
 
 export default function QuickEditPanel({
-    recipe, adjustments, accent, temperatureUnit, onChange, renderBrewAction
+    recipe, adjustments, accent, temperatureUnit, onChange, renderBrewAction, onSaveDose
 }: QuickEditPanelProps) {
     "use no memo";
     const appearance = useAppearance();
@@ -145,6 +152,9 @@ export default function QuickEditPanel({
     const temperatureBaseline = describeTemperatureBaseline(recipe, fontScale, temperatureUnit);
     const offsetValues = displayOffsetValues(bounds.tempOffset, temperatureUnit);
     const explainer = describeAdjustment(recipe, adjustments);
+    const saveDose = onSaveDose !== undefined && canSaveDose(recipe, adjustments)
+        ? adjustments.dose
+        : undefined;
     const problems = quickEditProblems(recipe, adjustments, temperatureUnit);
     const brewability: QuickEditPanelBrewability = {
         brewable: problems.length === 0,
@@ -258,6 +268,16 @@ export default function QuickEditPanel({
                       color={palette.dim}>
                     {explainer}
                 </Text>
+            )}
+
+            {saveDose !== undefined && (
+                <Button testID="quick-edit-save-dose" size="$3" chromeless
+                        alignSelf="flex-start" accessibilityRole="button"
+                        accessibilityLabel={`Save the recipe at ${saveDose} grams`}
+                        color={appearance.recipe(accent).ink}
+                        onPress={() => onSaveDose?.(saveDose)}>
+                    {`SAVE AS ${saveDose} G`}
+                </Button>
             )}
 
             {problems.length > 0 && (
