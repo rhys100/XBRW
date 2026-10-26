@@ -1,0 +1,1897 @@
+{
+ "version": 1,
+ "roaster": {
+  "name": "xBloom Collective",
+  "url": "https://collective.xbloom.com",
+  "feed": "https://raw.githubusercontent.com/rhys100/XBRW/preview/xbloom-feed-snapshot/public/feeds/xbloom.json"
+ },
+ "coffees": [
+  {
+   "id": "xbloom-ethiopia-banko-chelbesa",
+   "name": "Ethiopia Banko Chelbesa",
+   "url": "https://collective.xbloom.com/recipe/645142",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=BkrLxW6Lii20hA5rcbAOGg%3D%3D"
+    },
+    {
+     "size": "15g Studio",
+     "share": "https://share-h5.xbloom.com/?id=tItNWngw3Du4KdN8Zp6v0A%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Ethiopia",
+    "processing": "Natural anaerobic",
+    "flavours": [
+     "Apricot",
+     "Vanilla",
+     "Dried mango",
+     "Earl grey tea"
+    ],
+    "aromatics": "Apricot, Vanilla, Dried mango, Earl grey tea",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ],
+    "roaster": "Flower Child"
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20260611/6a2a126738750.jpg",
+   "roast": {
+    "level": "Medium-Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-ethiopia-deri-r",
+   "name": "Ethiopia Deri R",
+   "url": "https://collective.xbloom.com/recipe/645140",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=8zrt0rzyPHwY9z5DVYXJPA%3D%3D"
+    },
+    {
+     "size": "15g Studio",
+     "share": "https://share-h5.xbloom.com/?id=HRiZb14muqmXC3Kbyrc5fg%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Ethiopia",
+    "processing": "Super Natural",
+    "flavours": [
+     "Berry Compote",
+     "Plum",
+     "Citrus",
+     "Vanilla",
+     "Black Tea"
+    ],
+    "aromatics": "Berry Compote, Plum, Citrus, Vanilla, Black Tea",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20260611/6a2a126738750.jpg",
+   "roast": {
+    "level": "Medium-Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-ethiopia-shakiso",
+   "name": "Ethiopia Shakiso",
+   "url": "https://collective.xbloom.com/recipe/645138",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=Alqd9BXRKhwvaNoA%2FNPpIA%3D%3D"
+    },
+    {
+     "size": "15g Studio",
+     "share": "https://share-h5.xbloom.com/?id=syuELCC0FSXYTUmw3T5FLw%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Ethiopia",
+    "processing": "4 days aerobic",
+    "flavours": [
+     "Madarin",
+     "Redgrapes",
+     "Peach",
+     "Vanilla",
+     "Tea like"
+    ],
+    "aromatics": "Madarin, Redgrapes, Peach, Vanilla, Tea like",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20260611/6a2a126738750.jpg",
+   "roast": {
+    "level": "Medium-Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-ethiopia-tropical",
+   "name": "Ethiopia Tropical",
+   "url": "https://collective.xbloom.com/recipe/645136",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=sbSwz0K5LFgWkK%2BUKbLi1Q%3D%3D"
+    },
+    {
+     "size": "15g Studio",
+     "share": "https://share-h5.xbloom.com/?id=BrMSAPEYnzwMAjkbXo%2Bhog%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Ethiopia",
+    "processing": "Natural anaerobic",
+    "flavours": [
+     "Cantaloupe",
+     "Papaya",
+     "Stone fruit",
+     "Mandarin",
+     "Rose Tea"
+    ],
+    "aromatics": "Cantaloupe, Papaya, Stone fruit, Mandarin, Rose Tea",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20260611/6a2a126738750.jpg",
+   "roast": {
+    "level": "Medium-Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-ethiopia-chelchelle",
+   "name": "Ethiopia Chelchelle",
+   "url": "https://collective.xbloom.com/recipe/645134",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=OLjbYoq0Kwq2LTkYFCfajA%3D%3D"
+    },
+    {
+     "size": "15g Studio",
+     "share": "https://share-h5.xbloom.com/?id=Iy2nrUqgyfWGI0vGB0G3ug%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Ethiopia",
+    "processing": "Natural Anaerobic",
+    "flavours": [
+     "Peach",
+     "Strawberry",
+     "Ripe guava",
+     "honey"
+    ],
+    "aromatics": "Peach, Strawberry, Ripe guava, honey",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20260611/6a2a126738750.jpg",
+   "roast": {
+    "level": "Medium-Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-people-possession-bpm",
+   "name": "People Possession BPM",
+   "url": "https://collective.xbloom.com/recipe/645132",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=dmW5Ev9AZW4LIqc9Q%2BJdJQ%3D%3D"
+    },
+    {
+     "size": "15g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=Dqarwdd9hK4gNT2gfzZdMA%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Ethiopia, Colombia",
+    "processing": "Washed, Co-Fermented",
+    "variety": "74110, Caturra",
+    "flavours": [
+     "Blueberry Pie",
+     "Raspberry",
+     "Vanilla"
+    ],
+    "aromatics": "Blueberry Pie, Raspberry, Vanilla",
+    "tags": [
+     "Blend",
+     "xPod"
+    ],
+    "roaster": "People Possession"
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20260611/6a2a126738750.jpg",
+   "roast": {
+    "level": "Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-people-possession-peach",
+   "name": "People Possession Peach",
+   "url": "https://collective.xbloom.com/recipe/645130",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=VGIWDPuzcaXdn8AhujuzRg%3D%3D"
+    },
+    {
+     "size": "15g Studio",
+     "share": "https://share-h5.xbloom.com/?id=aOqozR6NpK02LJtjqI1bBQ%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Ethiopia",
+    "processing": "Washed",
+    "variety": "74110, Heirloom",
+    "flavours": [
+     "Peach",
+     "Jasmine",
+     "Lemon"
+    ],
+    "aromatics": "Peach, Jasmine, Lemon",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ],
+    "roaster": "People Possession"
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20260611/6a2a126738750.jpg",
+   "roast": {
+    "level": "Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-ethiopia-hambela-natural",
+   "name": "Ethiopia Hambela Natural",
+   "url": "https://collective.xbloom.com/recipe/645128",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=LUX%2F4nR8Kw2t1%2B1vQ18kQQ%3D%3D"
+    },
+    {
+     "size": "15g Studio",
+     "share": "https://share-h5.xbloom.com/?id=KI6oMp0zp7OIyyM8kTxBhw%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Ethiopia",
+    "processing": "Natural",
+    "flavours": [
+     "Nectarine",
+     "Orange Blossom",
+     "Mandarin",
+     "Honey"
+    ],
+    "aromatics": "Nectarine, Orange Blossom, Mandarin, Honey",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20260611/6a2a126738750.jpg",
+   "roast": {
+    "level": "Medium-Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-ethiopia-buku-saysa",
+   "name": "Ethiopia buku saysa",
+   "url": "https://collective.xbloom.com/recipe/645126",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=gLP0jVwXNmHr5YEdsdXyqw%3D%3D"
+    },
+    {
+     "size": "15g Studio",
+     "share": "https://share-h5.xbloom.com/?id=AX2uKom1VOJmCXsdy1Y6Fg%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Ethiopia",
+    "processing": "Natural",
+    "flavours": [
+     "Nectarine",
+     "Blood Orange",
+     "Honey dew",
+     "Earl Grey"
+    ],
+    "aromatics": "Nectarine, Blood Orange, Honey dew, Earl Grey",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20260611/6a2a126738750.jpg",
+   "roast": {
+    "level": "Medium Roast"
+   }
+  },
+  {
+   "id": "xbloom-ethiopia-uraga-washed",
+   "name": "Ethiopia Uraga Washed",
+   "url": "https://collective.xbloom.com/recipe/645124",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=AoZ%2B0bb2lpWNholIHnrjKQ%3D%3D"
+    },
+    {
+     "size": "15g Studio",
+     "share": "https://share-h5.xbloom.com/?id=6VKQAqcewMWYgpjwZ6LOgQ%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Ethiopia",
+    "processing": "Fully Washed",
+    "flavours": [
+     "Candied Lemon",
+     "Dried Fruit",
+     "Molases",
+     "Early Grey"
+    ],
+    "aromatics": "Candied Lemon, Dried Fruit, Molases, Early Grey",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20260611/6a2a126738750.jpg",
+   "roast": {
+    "level": "Medium Roast"
+   }
+  },
+  {
+   "id": "xbloom-costa-rica-chaparral",
+   "name": "Costa Rica Chaparral",
+   "url": "https://collective.xbloom.com/recipe/645122",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=%2BwaRP6G6qHaiTRj7tzZ0vQ%3D%3D"
+    },
+    {
+     "size": "15g Studio",
+     "share": "https://share-h5.xbloom.com/?id=47RDy4rr8axh%2BinH%2ByyC%2Fw%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Costa Rica",
+    "processing": "Anaerobic Natural",
+    "flavours": [
+     "Mixed Berries",
+     "Orange",
+     "plum",
+     "Brown sugar"
+    ],
+    "aromatics": "Mixed Berries, Orange, plum, Brown sugar",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20260611/6a2a126738750.jpg",
+   "roast": {
+    "level": "Medium Roast"
+   }
+  },
+  {
+   "id": "xbloom-indonesia-barrel-age",
+   "name": "Indonesia Barrel Age",
+   "url": "https://collective.xbloom.com/recipe/645120",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=NbEuGeR5DiNzkQVeIZc2fw%3D%3D"
+    },
+    {
+     "size": "15g Studio",
+     "share": "https://share-h5.xbloom.com/?id=%2F7wIg50Iqaxxxk2G8dyboQ%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Indonesia",
+    "processing": "Barrel Aged",
+    "flavours": [
+     "Ripe Grapes",
+     "Dried Fruits",
+     "Plum"
+    ],
+    "aromatics": "Ripe Grapes, Dried Fruits, Plum",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20260611/6a2a126738750.jpg",
+   "roast": {
+    "level": "Medium Roast"
+   }
+  },
+  {
+   "id": "xbloom-kenya-simba",
+   "name": "Kenya Simba",
+   "url": "https://collective.xbloom.com/recipe/645118",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=dyYlSXsDBTQnKRvNf3v4Tg%3D%3D"
+    },
+    {
+     "size": "15g Studio",
+     "share": "https://share-h5.xbloom.com/?id=wwSLV8YwOkgSJGDM6VgYgw%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Kenya",
+    "processing": "Anaerobic",
+    "flavours": [
+     "Tropical fruits",
+     "berries",
+     "plum",
+     "brown sugar"
+    ],
+    "aromatics": "Tropical fruits, berries, plum, brown sugar",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20260611/6a2a126738750.jpg",
+   "roast": {
+    "level": "Medium-Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-tuka-el-mielero-nicaragua",
+   "name": "Tuka El Mielero - Nicaragua",
+   "url": "https://collective.xbloom.com/recipe/641991",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=5jil2fAnGNJxlIxnGk1yXA%3D%3D"
+    },
+    {
+     "size": "15g Studio",
+     "share": "https://share-h5.xbloom.com/?id=y%2BfKmqNWlhcgzrUxE8IGMQ%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Nicaragua",
+    "processing": "Fermented Honey",
+    "flavours": [
+     "Mango",
+     "Plum",
+     "Peach"
+    ],
+    "aromatics": "Mango, Plum, Peach",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20261021/6ad878a27cb11.png",
+   "roast": {
+    "level": "Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-standout-double-bloom",
+   "name": "Standout Double Bloom",
+   "url": "https://collective.xbloom.com/recipe/641989",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=xY9hxFcb2HZSMsM6AhHsNA%3D%3D"
+    },
+    {
+     "size": "15g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=bT%2F3eg7%2BCl18nib%2BgA8%2FCA%3D%3D"
+    }
+   ],
+   "bean": {
+    "tags": [
+     "xPod"
+    ]
+   }
+  },
+  {
+   "id": "xbloom-el-salvador-las-cascadas-xpod",
+   "name": "El Salvador Las Cascadas xPod",
+   "url": "https://collective.xbloom.com/recipe/641986",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=RxNv62eqDGwLeMryt4aWBg%3D%3D"
+    },
+    {
+     "size": "15g Studio",
+     "share": "https://share-h5.xbloom.com/?id=MwZ0ct6Mmu8apwM%2BM2nb2g%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "La Palma, Chalatenango, El Salvador",
+    "processing": "Semi-Washed, Honey",
+    "variety": "Pacamara",
+    "flavours": [
+     "Red Currant",
+     "Plum",
+     "Dried Apricot",
+     "Roselle Tea"
+    ],
+    "aromatics": "Red Currant, Plum, Dried Apricot, Roselle Tea",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20261021/6ad886cd130b9.jpg",
+   "roast": {
+    "level": "Medium-Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-strawberry-decaf-pettibone",
+   "name": "Strawberry Decaf Pettibone",
+   "url": "https://collective.xbloom.com/recipe/641984",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=t0J07EhXVG18lJ5isPtNgw%3D%3D"
+    },
+    {
+     "size": "15g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=P12oHPYwt1bBMRJoz2Zo1w%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Colombia",
+    "processing": "Natural",
+    "variety": "Yellow Red Caturra",
+    "flavours": [
+     "Tropical Fruits",
+     "Strawberry Candy",
+     "Cane Sugar"
+    ],
+    "aromatics": "Tropical Fruits, Strawberry Candy, Cane Sugar",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ],
+    "roaster": "Pettibone Coffee"
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20261024/6adbe7aa9aa30.png",
+   "roast": {
+    "level": "Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-15-mile-pettibone-coffee",
+   "name": "15 Mile Pettibone Coffee",
+   "url": "https://collective.xbloom.com/recipe/641982",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=Kv78ne1Fk8ycL5Gd9nTu3g%3D%3D"
+    },
+    {
+     "size": "15g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=tTKirYp217USWpLwrSmMkQ%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Ethiopia Colombia",
+    "processing": "Natural",
+    "variety": "Landrace",
+    "flavours": [
+     "Dark Chocolate",
+     "Dried Fruit",
+     "Molasses Round"
+    ],
+    "aromatics": "Dark Chocolate, Dried Fruit, Molasses Round",
+    "tags": [
+     "Blend",
+     "xPod"
+    ],
+    "roaster": "Pettibone Coffee"
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20261024/6adbe75632c22.png",
+   "roast": {
+    "level": "Medium-Dark Roast"
+   }
+  },
+  {
+   "id": "xbloom-b-syredrevet-288ml",
+   "name": "B. Syredrevet 288ml",
+   "url": "https://collective.xbloom.com/recipe/638862",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=NcGPIB47AAqk%2F%2FfVekxr2Q%3D%3D"
+    },
+    {
+     "size": "18g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=BMAbCG%2BMVb85kwY9P1AYOg%3D%3D"
+    }
+   ],
+   "bean": {
+    "processing": "Washed, pulped natural",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20260611/6a2a126738750.jpg"
+  },
+  {
+   "id": "xbloom-d-fruktig-frisk-vasket-288ml",
+   "name": "D. Fruktig, frisk vasket 288ml",
+   "url": "https://collective.xbloom.com/recipe/638860",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=JdlVwnHEfIXoIlD4xiDGMA%3D%3D"
+    },
+    {
+     "size": "18g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=rvmomP5fDt7zZBbxp3wV6w%3D%3D"
+    }
+   ],
+   "bean": {
+    "processing": "Washed",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20260611/6a2a126738750.jpg"
+  },
+  {
+   "id": "xbloom-brazil-one-to-two",
+   "name": "Brazil & One to two",
+   "url": "https://collective.xbloom.com/recipe/638858",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=mYyv4EcPIhoKDCumYXJy%2FQ%3D%3D"
+    },
+    {
+     "size": "18g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=qlc66hJP6zmB2B8hAysxTg%3D%3D"
+    }
+   ],
+   "bean": {
+    "processing": "Natural",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20260611/6a2a126738750.jpg"
+  },
+  {
+   "id": "xbloom-pudding-banana-pyjamas",
+   "name": "Pudding & Banana pyjamas",
+   "url": "https://collective.xbloom.com/recipe/638856",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=fVyEwSHydSRxHENtkSS94A%3D%3D"
+    },
+    {
+     "size": "18g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=L9DHH770ipo%2FnnOOVABKeg%3D%3D"
+    }
+   ],
+   "bean": {
+    "processing": "Natural",
+    "tags": [
+     "Blend",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20260611/6a2a126738750.jpg"
+  },
+  {
+   "id": "xbloom-blueberry-chocula-with-milk",
+   "name": "Blueberry Chocula with milk",
+   "url": "https://collective.xbloom.com/recipe/635751",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=2eYOVLQAcvOE2vvfRobluw%3D%3D"
+    },
+    {
+     "size": "18g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=C39oSMRMeZ%2BOf30rCwXT6w%3D%3D"
+    }
+   ],
+   "bean": {
+    "processing": "Natural",
+    "tags": [
+     "Blend",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20260611/6a2a126738750.jpg"
+  },
+  {
+   "id": "xbloom-verry-melon-with-milk",
+   "name": "Verry Melon with milk",
+   "url": "https://collective.xbloom.com/recipe/635749",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=n4yshaZGz2VQLHSS4L1grQ%3D%3D"
+    },
+    {
+     "size": "18g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=px5Q4pjWOx9ytZuSgdFRgQ%3D%3D"
+    }
+   ],
+   "bean": {
+    "processing": "Natural",
+    "tags": [
+     "Blend",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20260611/6a2a126738750.jpg"
+  },
+  {
+   "id": "xbloom-whisky-rum-on-ice",
+   "name": "Whisky & Rum on ice",
+   "url": "https://collective.xbloom.com/recipe/635747",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=MHvh1Rjl0SIMxe9AYxxR7w%3D%3D"
+    },
+    {
+     "size": "18g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=qdE8zv2APUkqkeyVn%2FVIdA%3D%3D"
+    }
+   ],
+   "bean": {
+    "processing": "Natural",
+    "tags": [
+     "Blend",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20260611/6a2a126738750.jpg"
+  },
+  {
+   "id": "xbloom-ethiopia-sidamo-on-ice",
+   "name": "Ethiopia Sidamo on ice",
+   "url": "https://collective.xbloom.com/recipe/635745",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=QsjkdkGO6HISZK6YTMPGcQ%3D%3D"
+    },
+    {
+     "size": "18g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=amrCItUcxS41Ly%2BWN%2BfKoA%3D%3D"
+    }
+   ],
+   "bean": {
+    "processing": "Washed Process",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20260611/6a2a126738750.jpg"
+  },
+  {
+   "id": "xbloom-peach-sochu-on-ice",
+   "name": "Peach Sochu on ice",
+   "url": "https://collective.xbloom.com/recipe/635742",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=EweRB8Zie5GwR3RdGK5YhQ%3D%3D"
+    },
+    {
+     "size": "15g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=ADwQDAphiUeJwcj62lCGuQ%3D%3D"
+    }
+   ],
+   "bean": {
+    "processing": "Natural",
+    "tags": [
+     "Blend",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20260611/6a2a126738750.jpg"
+  },
+  {
+   "id": "xbloom-verry-melon-on-ice",
+   "name": "Verry Melon on ice",
+   "url": "https://collective.xbloom.com/recipe/635740",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=PDrnxbN5T6H%2FJbgXcHuhdw%3D%3D"
+    },
+    {
+     "size": "15g Studio",
+     "share": "https://share-h5.xbloom.com/?id=fzSytC%2FLHln4B4%2BXc2cAAw%3D%3D"
+    }
+   ],
+   "bean": {
+    "processing": "Natural",
+    "tags": [
+     "Blend",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20260611/6a2a126738750.jpg"
+  },
+  {
+   "id": "xbloom-karimikui",
+   "name": "Karimikui",
+   "url": "https://collective.xbloom.com/recipe/635738",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=ucyF6ihUFc384rmSJHRSFg%3D%3D"
+    },
+    {
+     "size": "15g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=GAeYo99dt8jKO9PVm8SMIg%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Kenya",
+    "processing": "Washed",
+    "variety": "Mix",
+    "flavours": [
+     "Black Tea",
+     "Kumquat",
+     "Apricot"
+    ],
+    "aromatics": "Black Tea, Kumquat, Apricot",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20261019/6ad5d765b8309.png",
+   "roast": {
+    "level": "Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-competicion-chiroso-las-flores-colombia",
+   "name": "Competición Chiroso Las Flores Colombia",
+   "url": "https://collective.xbloom.com/recipe/635736",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=s05MnGx91NuPudpOCRqdXQ%3D%3D"
+    },
+    {
+     "size": "13g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=JJe060SEglUDv8RBqHpb4Q%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Colombia",
+    "processing": "Washed",
+    "variety": "Mix",
+    "flavours": [
+     "Rosemary Honey",
+     "Lemon Candy",
+     "Lemon Verbena"
+    ],
+    "aromatics": "Rosemary Honey, Lemon Candy, Lemon Verbena",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20261019/6ad5d7668e115.png",
+   "roast": {
+    "level": "Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-pacamara",
+   "name": "Pacamara",
+   "url": "https://collective.xbloom.com/recipe/635734",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=quYkDleQNGW2l7u49xs9cw%3D%3D"
+    },
+    {
+     "size": "16g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=vddx8w9MTmyXgOnJjMMHng%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "El Salvador",
+    "processing": "Washed",
+    "variety": "Mix",
+    "flavours": [
+     "Persimmon",
+     "Orange Blossom Honey",
+     "Dulce de Leche"
+    ],
+    "aromatics": "Persimmon, Orange Blossom Honey, Dulce de Leche",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20261019/6ad5d76770751.png",
+   "roast": {
+    "level": "Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-costa-rica-honey-geisha",
+   "name": "Costa Rica Honey Geisha",
+   "url": "https://collective.xbloom.com/recipe/635732",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=zjkVzcuQXAJvq3V65h%2Borg%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Costa Rica",
+    "processing": "Honey",
+    "variety": "Geisha",
+    "flavours": [
+     "Caramel・Peche Melba・Bergamot・Whi"
+    ],
+    "aromatics": "Caramel・Peche Melba・Bergamot・Whi",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20260922/6ab18fcf1c42e.png",
+   "roast": {
+    "level": "Medium-Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-kotowa-geisha",
+   "name": "Kotowa Geisha",
+   "url": "https://collective.xbloom.com/recipe/620249",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=SabhVzb%2F6TtLwA11PDH7qA%3D%3D"
+    },
+    {
+     "size": "15g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=xgzc945CQe8iaAT70e1rDQ%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Panama",
+    "processing": "Natural",
+    "variety": "Geisha",
+    "flavours": [
+     "Floral",
+     "Jasmine",
+     "Lemon",
+     "Orange",
+     "Panela"
+    ],
+    "aromatics": "Floral, Jasmine, Lemon, Orange, Panela",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20261024/6adbe818513f0.png",
+   "roast": {
+    "level": "Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-duncan-two-ways",
+   "name": "Duncan Two Ways",
+   "url": "https://collective.xbloom.com/recipe/620247",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=gjyOyoqtbKZvKiHBgxJ3vg%3D%3D"
+    },
+    {
+     "size": "15g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=Ac2UgZcDcEoH3pyFrrr1sw%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Panama",
+    "processing": "Natural",
+    "variety": "Casiopea, Heirloom",
+    "flavours": [
+     "Strawberry",
+     "Black Tea",
+     "Peach",
+     "Blueberry"
+    ],
+    "aromatics": "Strawberry, Black Tea, Peach, Blueberry",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20261024/6adbe809b09c1.png",
+   "roast": {
+    "level": "Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-sebastian-ramirez-pb",
+   "name": "Sebastian Ramirez PB",
+   "url": "https://collective.xbloom.com/recipe/617165",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=5y1jBPwsdHHdBeVyfc7KRw%3D%3D"
+    },
+    {
+     "size": "15g Studio",
+     "share": "https://share-h5.xbloom.com/?id=lO4XdkEG20qdS8Zp6GiPmw%3D%3D"
+    }
+   ],
+   "bean": {
+    "tags": [
+     "xPod"
+    ]
+   }
+  },
+  {
+   "id": "xbloom-little-wolf",
+   "name": "Little Wolf",
+   "url": "https://collective.xbloom.com/recipe/617163",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=kixi7G2xHKhtDuRaUI1D8w%3D%3D"
+    },
+    {
+     "size": "15g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=sZ6il8ygQxVDlKh9ZKuvyQ%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Ethiopia",
+    "processing": "Natural",
+    "variety": "Landrace",
+    "flavours": [
+     "Sweet Tea",
+     "Jasmine",
+     "Candy-like"
+    ],
+    "aromatics": "Sweet Tea, Jasmine, Candy-like",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ],
+    "roaster": "Little Wolf"
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20261024/6adbe9541f01c.png",
+   "roast": {
+    "level": "Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-companion-blend",
+   "name": "Companion Blend",
+   "url": "https://collective.xbloom.com/recipe/617162",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=Zf7%2FUWWndecviMR8q10gSg%3D%3D"
+    },
+    {
+     "size": "15g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=qORU6DfRTKFz%2FjOCYLeSGA%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Colombia",
+    "processing": "Washed",
+    "variety": "Various",
+    "flavours": [
+     "Chocolate",
+     "Berry",
+     "Creamy"
+    ],
+    "aromatics": "Chocolate, Berry, Creamy",
+    "tags": [
+     "Blend",
+     "xPod"
+    ],
+    "roaster": "Little Wolf"
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20261024/6adbe9915d4d5.png",
+   "roast": {
+    "level": "Medium Roast"
+   }
+  },
+  {
+   "id": "xbloom-daniel-caro-lopez",
+   "name": "Daniel Caro Lopez",
+   "url": "https://collective.xbloom.com/recipe/617158",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=rpZS7zK32K%2FmVIgbFOQWOQ%3D%3D"
+    },
+    {
+     "size": "15g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=Kb4yUQd4ao%2FDJuasHmj6qQ%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Colombia",
+    "processing": "Washed",
+    "variety": "Chiroso",
+    "flavours": [
+     "Lychee",
+     "Oolong",
+     "Mango"
+    ],
+    "aromatics": "Lychee, Oolong, Mango",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20261024/6adbe8f33d795.png",
+   "roast": {
+    "level": "Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-chorso",
+   "name": "Chorso",
+   "url": "https://collective.xbloom.com/recipe/617156",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Studio",
+     "share": "https://share-h5.xbloom.com/?id=%2FIBTZLxVyT6%2FXpOii84cTA%3D%3D"
+    },
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=HeeqOI0XxgYTw3HU1o8qyw%3D%3D"
+    }
+   ],
+   "bean": {
+    "tags": [
+     "xPod"
+    ]
+   }
+  },
+  {
+   "id": "xbloom-ml-standard",
+   "name": "ML Standard",
+   "url": "https://collective.xbloom.com/recipe/617154",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=4uTJq2cMSnH7Wn5HtOSyDA%3D%3D"
+    },
+    {
+     "size": "15g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=MM7aRiAtq4ZEEHXBRClYMA%3D%3D"
+    }
+   ],
+   "bean": {
+    "processing": "Natural",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20261013/6acd87d16a910.png"
+  },
+  {
+   "id": "xbloom-the-future",
+   "name": "The Future",
+   "url": "https://collective.xbloom.com/recipe/604835",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Studio",
+     "share": "https://share-h5.xbloom.com/?id=XjaVYh9K6IyKSbl9FohnEA%3D%3D"
+    },
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=ZUR8PLno32oyGAiDItMuhA%3D%3D"
+    }
+   ],
+   "bean": {
+    "tags": [
+     "xPod"
+    ]
+   }
+  },
+  {
+   "id": "xbloom-colombia-gw",
+   "name": "Colombia GW",
+   "url": "https://collective.xbloom.com/recipe/604833",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=qruZ2fjmV7xRK%2Bk1JeqqnA%3D%3D"
+    },
+    {
+     "size": "13g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=clgp1F1FibMC0wcMwwv5Rw%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Los Eucaliptos",
+    "processing": "Washed",
+    "variety": "Geisha",
+    "flavours": [
+     "Floral",
+     "Yellow Peach",
+     "Red Currant",
+     "Cane Sugar",
+     "Clean"
+    ],
+    "aromatics": "Floral, Yellow Peach, Red Currant, Cane Sugar, Clean",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20261009/6ac8bc7e4b691.png",
+   "roast": {
+    "level": "Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-yabitu-koba",
+   "name": "Yabitu Koba",
+   "url": "https://collective.xbloom.com/recipe/601773",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=YJp%2Fn%2FFXTR7gcgGsWRE6Kg%3D%3D"
+    },
+    {
+     "size": "15g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=BJRU24VSvNa3rLR6IOCcZg%3D%3D"
+    }
+   ],
+   "bean": {
+    "tags": [
+     "xPod"
+    ]
+   }
+  },
+  {
+   "id": "xbloom-hambela-deri-fahmi",
+   "name": "Hambela Deri Fahmi",
+   "url": "https://collective.xbloom.com/recipe/601771",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=7wN6X78OnlpYpSEEBF1XyA%3D%3D"
+    },
+    {
+     "size": "15g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=4RQHDceAsjVlBKnKLUCEcQ%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Ethiopia",
+    "processing": "Natural",
+    "variety": "Gesha",
+    "flavours": [
+     "Boysenberry",
+     "Wild Blueberry",
+     "Lilac"
+    ],
+    "aromatics": "Boysenberry, Wild Blueberry, Lilac",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ],
+    "roaster": "Regalia Coffee"
+   },
+   "roast": {
+    "level": "Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-c-6390-engelberg-geisha-letty",
+   "name": "C+ 6390 Engelberg Geisha Letty",
+   "url": "https://collective.xbloom.com/recipe/601769",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=h5d6i3qD3tXJNpAxF9zMtA%3D%3D"
+    },
+    {
+     "size": "15g Studio",
+     "share": "https://share-h5.xbloom.com/?id=32U0RyGiY22gpk5ShmUsGg%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Colombia, Cauca, Finca El Paraíso",
+    "processing": "Washed, 12 h low-temperature anaerobic fermentation with tropical yeast, thermal shock wash",
+    "variety": "Geisha",
+    "flavours": [
+     "Floral blossoms",
+     "golden caramel",
+     "pineapple",
+     "apricot. Long",
+     "lingering finish with citric cla",
+     "Body 4/5",
+     "Acidity 3/5."
+    ],
+    "aromatics": "Floral blossoms, golden caramel, pineapple, apricot. Long, lingering finish with citric cla, Body 4/5, Acidity 3/5.",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20261007/6ac54b8db9414.png",
+   "roast": {
+    "level": "Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-c-andermatt-geisha-natural",
+   "name": "C+ Andermatt Geisha Natural",
+   "url": "https://collective.xbloom.com/recipe/601767",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=mLMmDyhTt2yqKGMVPkET2A%3D%3D"
+    },
+    {
+     "size": "15g Studio",
+     "share": "https://share-h5.xbloom.com/?id=ZWqz1vqQ8nhMJymXlKdAtg%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Panama, Boquete, Abu Coffee (Hacienda Cañas Verdes)",
+    "processing": "Natural, slow-dried on raised beds",
+    "variety": "Geisha",
+    "flavours": [
+     "Aroma: tropical florals",
+     "jasmine",
+     "ripe berries. Flavor: bergamot",
+     "tropical fruit",
+     "honey sweetness. Aftertaste: lon",
+     "sweet and evolving. Sweetness 5/",
+     "Body 4/5",
+     "Acidity 4/5."
+    ],
+    "aromatics": "Aroma: tropical florals, jasmine, ripe berries. Flavor: bergamot, tropical fruit, honey sweetness. Aftertaste: lon, sweet and evolving. Sweetness 5/, Body 4/5, Acidity 4/5.",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20261008/6ac6a4ca7de74.webp",
+   "roast": {
+    "level": "Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-c-leysin-pink-bourbon-peach",
+   "name": "C+ Leysin Pink Bourbon Peach",
+   "url": "https://collective.xbloom.com/recipe/601765",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=DspHkQNwCzZRtcZ5IK%2FK2g%3D%3D"
+    },
+    {
+     "size": "15g Studio",
+     "share": "https://share-h5.xbloom.com/?id=5ikJgv7LR%2Bz2hCAW0mC%2FSw%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Colombia, Cauca, Finca El Paraíso",
+    "processing": "Washed, 48 h cherry fermentation, 36 h depulped fermentation with tropical yeast, thermal shock wash",
+    "variety": "Pink Bourbon",
+    "flavours": [
+     "Peach",
+     "yellow fruit",
+     "caramel. Long lactic sweetness",
+     "creamy and balanced body. Sweetn",
+     "Body 4/5",
+     "Acidity 3/5."
+    ],
+    "aromatics": "Peach, yellow fruit, caramel. Long lactic sweetness, creamy and balanced body. Sweetn, Body 4/5, Acidity 3/5.",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20261008/6ac6a1cd2fd44.jpg",
+   "roast": {
+    "level": "Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-omni-cc-light-roast",
+   "name": "Omni CC Light roast",
+   "url": "https://collective.xbloom.com/recipe/601763",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=abVmM9f%2FCsRQ%2B8wzt8gaeQ%3D%3D"
+    },
+    {
+     "size": "14g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=SxsGirk%2BE%2Fzy0fYd8unhsQ%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Sidama, Ethiopia",
+    "processing": "Washed",
+    "variety": "Kurume",
+    "flavours": [
+     "Tea Rose",
+     "Fresh Strawberry",
+     "Yellow Peach",
+     "Clementine",
+     "Sugary",
+     "Structured",
+     "Juicy",
+     "Black Tea"
+    ],
+    "aromatics": "Tea Rose, Fresh Strawberry, Yellow Peach, Clementine, Sugary, Structured, Juicy, Black Tea",
+    "tags": [
+     "シングルオリジン",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20261007/6ac61f13166f3.png",
+   "roast": {
+    "level": "Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-10g-obtr",
+   "name": "10g obtr",
+   "url": "https://collective.xbloom.com/recipe/601761",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=8RNAO6zYQDw6gpyiTSDQ1w%3D%3D"
+    },
+    {
+     "size": "10g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=kET%2BGhIm9dcTlf2mKdpyag%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "・Colombia Geisha -Washed ・Ethiopia -Natural ・Colombia -Culturing ・Colombia -Infusion",
+    "processing": "Washed, Natural, Culturing, Infused",
+    "variety": "Geisha, Castillo, Caturra, Hairroom",
+    "flavours": [
+     "マスカットとライチをおもわせる鮮烈な果実感にミドリ・モヒートのよ"
+    ],
+    "aromatics": "マスカットとライチをおもわせる鮮烈な果実感にミドリ・モヒートのよ",
+    "tags": [
+     "ブレンド",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20261007/6ac620d94bc68.png",
+   "roast": {
+    "level": "Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-raw-sugar-roast",
+   "name": "Raw Sugar Roast",
+   "url": "https://collective.xbloom.com/recipe/601759",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=hftgVgwv4dfSl%2Fm36a23%2Fg%3D%3D"
+    },
+    {
+     "size": "13g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=PLCz%2F3i0bumPXpCE1Vydjw%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Ethiopia Bulga (West Arsi)",
+    "processing": "Washed",
+    "variety": "Heirloom",
+    "flavours": [
+     "Lemon candy",
+     "Passion fruit",
+     "White wine",
+     "Dragon fruit"
+    ],
+    "aromatics": "Lemon candy, Passion fruit, White wine, Dragon fruit",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20261007/6ac621faa82c2.png",
+   "roast": {
+    "level": "Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-roast-design-coffee-omni",
+   "name": "Roast Design Coffee Omni",
+   "url": "https://collective.xbloom.com/recipe/601757",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=3M2BwRfGxw1raYnMluxKbA%3D%3D"
+    },
+    {
+     "size": "16g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=gTYa3L%2B2w3yJXe6zC2yH2g%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "エチオピア シダモ県 ベンサ群シャンタワネ",
+    "processing": "Washed",
+    "variety": "エチオピア原種",
+    "flavours": [
+     "フローラル",
+     "オレンジ",
+     "アプリコット",
+     "ブラックティー",
+     "スムースMF"
+    ],
+    "aromatics": "フローラル, オレンジ, アプリコット, ブラックティー, スムースMF",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20261007/6ac622d2a8c5c.png",
+   "roast": {
+    "level": "Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-shovel-15g-hot",
+   "name": "SHOVEL - 15g HOT",
+   "url": "https://collective.xbloom.com/recipe/598701",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Studio",
+     "share": "https://share-h5.xbloom.com/?id=gN7lsNJrQACNZCp7Cutvkw%3D%3D"
+    }
+   ],
+   "bean": {
+    "tags": [
+     "SOE",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20261008/6ac6f32582baf.png",
+   "roast": {
+    "level": "Medium Roast"
+   }
+  },
+  {
+   "id": "xbloom-ethiopia-chelbesa-nat-xpod",
+   "name": "Ethiopia Chelbesa Nat xPod",
+   "url": "https://collective.xbloom.com/recipe/598700",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=EGRLpUyDdR7ccf0iH8rKbw%3D%3D"
+    },
+    {
+     "size": "15g Studio",
+     "share": "https://share-h5.xbloom.com/?id=dGDfKOooPV9Wh71B2DOOcQ%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Gedeb, Gedeo, Ethiopia",
+    "processing": "Natural",
+    "variety": "Wolisho & Dega",
+    "flavours": [
+     "Tropical Fruit",
+     "Mandarin",
+     "Red Berry",
+     "Lavender"
+    ],
+    "aromatics": "Tropical Fruit, Mandarin, Red Berry, Lavender",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ],
+    "roaster": "Flower Child"
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20261006/6ac47c6017119.jpg",
+   "roast": {
+    "level": "Medium-Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-kenya-kagumo-3-pour",
+   "name": "Kenya Kagumo 3 Pour",
+   "url": "https://collective.xbloom.com/recipe/598698",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=r7%2F433N1Gm6xtFQ3gC6SNg%3D%3D"
+    },
+    {
+     "size": "15g Studio",
+     "share": "https://share-h5.xbloom.com/?id=vSjpp8gnOl0H0RXQGpCWnA%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Nyeri, Kenya",
+    "processing": "Natural",
+    "variety": "SL28, SL34, Ruiru11",
+    "flavours": [
+     "Cranberry",
+     "Gala Apple",
+     "Black Plum",
+     "Pineapple",
+     "Red Currant"
+    ],
+    "aromatics": "Cranberry, Gala Apple, Black Plum, Pineapple, Red Currant",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20261006/6ac47d2c0f874.jpg",
+   "roast": {
+    "level": "Medium-Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-new-school",
+   "name": "New School",
+   "url": "https://collective.xbloom.com/recipe/592598",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=eg1qLf6%2F%2B4vkhhNA2lZEbw%3D%3D"
+    },
+    {
+     "size": "15g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=HmMBFxiZ%2BsVNaTjcpexrwQ%3D%3D"
+    }
+   ],
+   "bean": {
+    "tags": [
+     "xPod"
+    ],
+    "roaster": "Black & White"
+   }
+  },
+  {
+   "id": "xbloom-faver-ninco-pb",
+   "name": "Faver Ninco PB",
+   "url": "https://collective.xbloom.com/recipe/592596",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Studio",
+     "share": "https://share-h5.xbloom.com/?id=D6hrXXtk8CoDRdpwy4vzxA%3D%3D"
+    },
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=X%2FbDs89ubhZh2uIV6JfF8g%3D%3D"
+    }
+   ],
+   "bean": {
+    "tags": [
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20261014/6acea04c1b9cf.png",
+   "roast": {
+    "level": "Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-jellybean",
+   "name": "Jellybean",
+   "url": "https://collective.xbloom.com/recipe/592595",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=%2FJGo2OFaxOX0iayV%2BIqDsg%3D%3D"
+    },
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=numyCoX4CqDIc%2BkIcteS%2Fw%3D%3D"
+    }
+   ],
+   "bean": {
+    "tags": [
+     "Omni"
+    ]
+   }
+  },
+  {
+   "id": "xbloom-sorbet",
+   "name": "Sorbet",
+   "url": "https://collective.xbloom.com/recipe/592592",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=zTxS6IFBcJYj9cGy0EvKUg%3D%3D"
+    },
+    {
+     "size": "15g Studio Omni",
+     "share": "https://share-h5.xbloom.com/?id=7VDAw97fJSDPGTikpRZv%2Bg%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Colombia",
+    "processing": "Anaerobic",
+    "variety": "Pink Bourbon",
+    "flavours": [
+     "Rose Water",
+     "Sorbet",
+     "Brown Sugar"
+    ],
+    "aromatics": "Rose Water, Sorbet, Brown Sugar",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20261014/6acea5cf847bc.png",
+   "roast": {
+    "level": "Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-poma-muthuaini",
+   "name": "POMA Muthuaini",
+   "url": "https://collective.xbloom.com/recipe/583458",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=Vm%2FYsromAdq5dNXawIfTKQ%3D%3D"
+    },
+    {
+     "size": "15g Studio",
+     "share": "https://share-h5.xbloom.com/?id=IAp7Lo1MQ1Ocn6FIQk6Q2Q%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Kenya",
+    "processing": "Washed",
+    "variety": "Domestic Varieties",
+    "flavours": [
+     "Juicy and Sweet"
+    ],
+    "aromatics": "Juicy and Sweet",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20260611/6a2a126738750.jpg",
+   "roast": {
+    "level": "Light Roast"
+   }
+  },
+  {
+   "id": "xbloom-poma-illubabor",
+   "name": "POMA Illubabor",
+   "url": "https://collective.xbloom.com/recipe/583456",
+   "available": true,
+   "recipes": [
+    {
+     "size": "15g Original",
+     "share": "https://share-h5.xbloom.com/?id=%2FGCFub%2B9cr9AKCrF6%2Fk%2Bvg%3D%3D"
+    },
+    {
+     "size": "15g Studio",
+     "share": "https://share-h5.xbloom.com/?id=zelLO8fDP0ndkqBOyYpgYQ%3D%3D"
+    }
+   ],
+   "bean": {
+    "country": "Ethiopia",
+    "processing": "Washed",
+    "variety": "Illubabor",
+    "flavours": [
+     "Black Tea",
+     "Jasmine",
+     "Lavender"
+    ],
+    "aromatics": "Black Tea, Jasmine, Lavender",
+    "tags": [
+     "Single Origin",
+     "xPod"
+    ]
+   },
+   "image": "https://tbdprodpic.s3.us-east-1.amazonaws.com/20260611/6a2a126738750.jpg",
+   "roast": {
+    "level": "Light Roast"
+   }
+  }
+ ]
+}

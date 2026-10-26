@@ -31,7 +31,9 @@ export type BuiltInFeed = {
  * build can point at a preview deployment.
  */
 export const XBLOOM_FEED_URL =
-    process.env.EXPO_PUBLIC_XBLOOM_FEED_URL ?? "https://xbrwplusplus.vercel.app/api/feeds/xbloom";
+    process.env.EXPO_PUBLIC_XBLOOM_FEED_URL ??
+    // PREVIEW ONLY: a static snapshot until api/feeds/xbloom is deployed.
+    "https://raw.githubusercontent.com/rhys100/XBRW/preview/xbloom-feed-snapshot/public/feeds/xbloom.json";
 
 export const BUILT_IN_FEEDS: readonly BuiltInFeed[] = [
     {
