@@ -115,6 +115,9 @@ function Action({label, spoken, testID, primary = false, disabled = false, onPre
  * latest. Three actions, because a catalogue is for deciding: brew it now
  * without keeping it, add it to the library, or put it on a shelf.
  */
+/** Read when a bag is saved, from an event, never while drawing. */
+const bagClock = () => Date.now();
+
 export default function RoasterCoffeeScreen({settings, feedUrl, coffeeId, library, shelves, bagStore}: {
     /** Injected by tests; production reads the route and the real stores. */
     settings?: Settings;
@@ -323,7 +326,7 @@ export default function RoasterCoffeeScreen({settings, feedUrl, coffeeId, librar
     function startBag(shelved: Recipe, input: BagSheetResult) {
         try {
             (bagStore ?? sharedBagDatabase)().createAndSelect(
-                newBag(catalogueBagInput(input, tracker)), shelved.uuid, Date.now());
+                newBag(catalogueBagInput(input, tracker)), shelved.uuid, bagClock());
         } catch (error) {
             console.warn("Could not save the catalogue bag.", error);
             notify({tone: "error", message: "The recipe is on the shelf, but the bag could not be saved."});
