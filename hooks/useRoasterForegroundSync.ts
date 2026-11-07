@@ -4,6 +4,7 @@ import {AppState} from "react-native";
 import {notify} from "@/components/XbrwToast";
 import {announceBack} from "@/hooks/useRoasterSubscriptions";
 import {sharedSettings} from "@/hooks/useSetting";
+import {seedCccFeed} from "@/library/cccFeedSeed";
 import {syncDue} from "@/library/roasterSync";
 import type {Settings} from "@/library/Settings";
 
@@ -21,6 +22,13 @@ export function useRoasterForegroundSync(settings?: Settings): void {
                     message: "Your saved roasters could not be updated. Try Refresh in Roaster feeds."
                 });
             }
+        }
+        // Fork-only (ccc/main). Before the first sync, so that sync reads it. A
+        // failed write costs only the seed, and the next launch tries again.
+        try {
+            seedCccFeed(store, Date.now());
+        } catch (error) {
+            console.warn("Could not add Central Coast Coffee.", error);
         }
         void sync();
         const listener = AppState.addEventListener("change", (state) => {

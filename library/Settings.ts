@@ -372,6 +372,11 @@ export const DEFAULTS = {
     roasterFeedOptOut: "",
     /** Validated subscription records; carried in backups. */
     roasterSubscriptions: "",
+    /**
+     * Fork-only (ccc/main): the Central Coast Coffee subscription has been
+     * offered to this install. Set once, never cleared, so an unsubscribe sticks.
+     */
+    cccFeedSeeded: false,
     /** Cached feed bodies, refetched after restore rather than backed up. */
     roasterCatalogue: "",
     /** Alert bookkeeping for the cached feeds, also excluded from backups. */
@@ -461,14 +466,14 @@ export type BackupExcluded =
     "bagExperimentEnabled" | "bagTracker" | "readyToBrewDismissedOn" |
     "machineModelString" | "machineName" | "ratingPromptDismissed" |
     "drawerHintLastShownAt" | "drawerHintShownCount" | "drawerHintManualOpens" |
-    "drawerHintSignature" | "drawerHintLastSeenAt" | "roasterCatalogue" | "roasterAlerts";
+    "drawerHintSignature" | "drawerHintLastSeenAt" | "roasterCatalogue" | "roasterAlerts" | "cccFeedSeeded";
 export const NOT_IN_BACKUP: readonly SettingKey[] = [
     "machineControlRecovery",
     "machineDeviceId", "savedMachines", "lastCardRead", "labsUnlocked", "beanconquerorHandoff", "easyModeOneTapWrite",
     "bagExperimentEnabled", "bagTracker", "readyToBrewDismissedOn",
     "machineModelString", "machineName", "ratingPromptDismissed",
     "drawerHintLastShownAt", "drawerHintShownCount", "drawerHintManualOpens",
-    "drawerHintSignature", "drawerHintLastSeenAt", "roasterCatalogue", "roasterAlerts"
+    "drawerHintSignature", "drawerHintLastSeenAt", "roasterCatalogue", "roasterAlerts", "cccFeedSeeded"
 ];
 
 /**
