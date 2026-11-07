@@ -24,7 +24,7 @@ Test files and docs are left out of the file lists.
 
 | Feature | What it does | Our PR | Upstream decision | ccc/main keeps ours | Files |
 |---|---|---|---|---|---|
-| Half-point ratios survive import (`fix/half-point-ratio-import`) | Import keeps xBloom's ratio (1:14.5) when the stages match it, instead of rounding it and refusing to brew. Saved rounded copies are repaired once. Also: Quick Edit steps a half-point ratio in halves, and a backup keeps a brew quick-edited away from one. | None yet. Not yet offered. Draft in `C:/Users/Rhys/code/XBRW-half-point-ratio-import-PR.md`. | Not yet offered | Yes, merged | `library/recipeIdentity.ts`, `library/xbloomRecipeData.ts`, `library/XBloomRecipe.ts`, `library/halfPointRepair.ts`, `library/RecipeDatabase.ts`, `hooks/useRecipeLibrary.ts`, `library/backup.ts`, `components/QuickEditPanel.tsx`, `app/brew.tsx` |
+| Half-point ratios survive import (`fix/half-point-ratio-import`) | Import keeps xBloom's ratio (1:14.5) when the stages match it, instead of rounding it and refusing to brew. Saved rounded copies are repaired once. Also: Quick Edit steps a half-point ratio in halves, and a backup keeps a brew quick-edited away from one. | [#298](https://github.com/hessius/XBRW/pull/298) | Open, sent 8 Nov 2026 | Yes, merged | `library/recipeIdentity.ts`, `library/xbloomRecipeData.ts`, `library/XBloomRecipe.ts`, `library/halfPointRepair.ts`, `library/RecipeDatabase.ts`, `hooks/useRecipeLibrary.ts`, `library/backup.ts`, `components/QuickEditPanel.tsx`, `app/brew.tsx` |
 
 ## Fork-only (never offered)
 
