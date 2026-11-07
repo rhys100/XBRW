@@ -236,6 +236,8 @@ describe("SettingsScreen", () => {
 
     it("persists the opt-in solid label switch in Appearance and retains it after reopening", async () => {
         const {settings, db} = sqlSettings();
+        // ccc/main ships it on; this device starts from off.
+        settings.set("solidControlLabels", false);
         await renderAppearanceSettings(settings);
         await openAppearance();
         expect(screen.getByRole("switch", {name: "Solid button labels"})).not.toBeChecked();
@@ -493,16 +495,16 @@ describe("SettingsScreen", () => {
             .toBe(false);
     });
 
-    it("keeps coffee details on cards off by default and persists both choices", async () => {
+    it("keeps coffee details on cards on by default (ccc/main) and persists both choices", async () => {
         const storage = memoryStorage();
         const settings = new Settings(storage);
         await renderWithProviders(<SettingsScreen settings={settings}/>);
         const toggle = () => screen.getByLabelText("Coffee details on cards");
-        expect(toggle().props.accessibilityState.checked).toBe(false);
-        await fireEvent(toggle(), "checkedChange", true);
-        expect(new Settings(storage).get("showRecipeCardDetails")).toBe(true);
+        expect(toggle().props.accessibilityState.checked).toBe(true);
         await fireEvent(toggle(), "checkedChange", false);
         expect(new Settings(storage).get("showRecipeCardDetails")).toBe(false);
+        await fireEvent(toggle(), "checkedChange", true);
+        expect(new Settings(storage).get("showRecipeCardDetails")).toBe(true);
     });
 
     it("persists a change to the toggle", async () => {
@@ -1749,10 +1751,12 @@ describe("SettingsScreen", () => {
                 {name: "Hide Labs, Anything you switched on here stays on."})).toBeTruthy();
         });
 
-        it("offers one-tap Easy Mode writing only as a default-off Labs opt-in", async () => {
+        it("offers one-tap Easy Mode writing only as a Labs opt-in", async () => {
             const storage = memoryStorage();
             const settings = new Settings(storage);
             settings.set("labsUnlocked", true);
+            // ccc/main ships it on; this device starts from off.
+            settings.set("easyModeOneTapWrite", false);
             await renderWithProviders(<SettingsScreen settings={settings}/>);
             expect(screen.getByRole("switch", {name: "Write Easy Mode slots on selection"})).not.toBeChecked();
             expect(screen.getByText(/choosing a slot writes all three slot drafts/i)).toBeTruthy();
@@ -1915,8 +1919,9 @@ describe("SettingsScreen", () => {
                  dotMatrixProfile: true}
             ));
             mockApplyRestore.mockReturnValue({status: "restored", added: 1});
-            // ccc/main ships the bag experiment on; this device starts from off.
+            // ccc/main ships these on; this device starts from off.
             new Settings(storage).set("bagExperimentEnabled", false);
+            new Settings(storage).set("easyModeOneTapWrite", false);
             await renderWithProviders(<SettingsScreen settings={new Settings(storage)}/>);
 
             await fireEvent.press(screen.getByRole("button",

@@ -19,8 +19,13 @@ import {ControlOperationError} from './machine/errors';
 export const DEFAULTS = {
     appearanceTheme: "original" as ThemeId,
     recipeColourMode: "original" as RecipeColourMode,
-    /** Opt-in solid lettering for filled buttons and selected controls. */
-    solidControlLabels: false,
+    /**
+     * Opt-in solid lettering for filled buttons and selected controls.
+     *
+     * Fork (ccc/main) only: on by default, because this build's owner asked for
+     * readable filled labels (our #268, which upstream took as this option).
+     */
+    solidControlLabels: true,
     /**
      * The `TEA` marker is always shown; `COFFEE` is redundant in a mostly-coffee
      * library, so it can be turned off.
@@ -36,7 +41,8 @@ export const DEFAULTS = {
     /** Coffee, pod and author pictures in ABOUT only; retain the legacy key. */
     showRecipeAvatars: true,
     showRecipeCardPhotos: false,
-    showRecipeCardDetails: false,
+    /** Fork (ccc/main) only: on by default. Our #271 became this option upstream. */
+    showRecipeCardDetails: true,
     showShelfPhotoPreviews: true,
     /**
      * Draw the one-line hint under every label on the BREW deck.
@@ -296,8 +302,13 @@ export const DEFAULTS = {
      * feature deserves, and it survives a relaunch like any other preference.
      */
     beanconquerorHandoff: false,
-    /** Device-local experiment: only the editor's WRITE flow may place and write. */
-    easyModeOneTapWrite: false,
+    /**
+     * Device-local experiment: only the editor's WRITE flow may place and write.
+     *
+     * Fork (ccc/main) only: on by default. Our #275 became this Labs setting
+     * upstream. The switch in Labs still turns it off.
+     */
+    easyModeOneTapWrite: true,
     /**
      * Device-local opt-in; inventory survives when this is off.
      *

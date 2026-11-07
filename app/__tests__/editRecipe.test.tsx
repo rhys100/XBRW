@@ -2205,7 +2205,8 @@ describe("WRITE with a machine remembered", () => {
 
     it("assigns a BLE-valid fine grind without enabling NFC writing", async () => {
         const deviceId = "chooser-fine-grind";
-        rememberMachine(deviceId);
+        // ccc/main ships one-tap writing on; this is the flow without it.
+        mockSettings = {machineDeviceId: deviceId, easyModeOneTapWrite: false};
         await renderEditor({grindSize: 20});
         expect(screen.getByLabelText(MACHINE_WRITE)).toBeEnabled();
         await fireEvent.press(screen.getByLabelText(MACHINE_WRITE));
@@ -2252,7 +2253,8 @@ describe("WRITE with a machine remembered", () => {
 
     it("sends Easy Mode slot to Assign to Easy Mode", async () => {
         const deviceId = "chooser-slot";
-        rememberMachine(deviceId);
+        // ccc/main ships one-tap writing on; this is the flow without it.
+        mockSettings = {machineDeviceId: deviceId, easyModeOneTapWrite: false};
         await renderEditor({name: "Chooser slot recipe"});
         await fireEvent.press(screen.getByLabelText(MACHINE_WRITE));
         await waitFor(async () => {

@@ -14,25 +14,27 @@ function fakeStorage(seed: Record<string, string> = {}): SettingsStorage {
 describe("Settings", () => {
     it("keeps one-tap Easy Mode writing a persistent, device-local opt-in", () => {
         const storage = fakeStorage();
-        expect(new Settings(storage).get("easyModeOneTapWrite")).toBe(false);
+        // ccc/main ships it on.
+        expect(new Settings(storage).get("easyModeOneTapWrite")).toBe(true);
         new Settings(storage).set("easyModeOneTapWrite", true);
         expect(new Settings(storage).get("easyModeOneTapWrite")).toBe(true);
         new Settings(storage).set("easyModeOneTapWrite", false);
         expect(new Settings(storage).get("easyModeOneTapWrite")).toBe(false);
         expect(new Settings(fakeStorage({easyModeOneTapWrite: '"true"'}))
-            .get("easyModeOneTapWrite")).toBe(false);
+            .get("easyModeOneTapWrite")).toBe(true);
         expect(NOT_IN_BACKUP).toContain("easyModeOneTapWrite");
     });
 
     it("keeps solid labels opt-in, including after reopening and switching them back off", () => {
         const storage = fakeStorage();
-        expect(new Settings(storage).get("solidControlLabels")).toBe(false);
+        // ccc/main ships it on.
+        expect(new Settings(storage).get("solidControlLabels")).toBe(true);
         new Settings(storage).set("solidControlLabels", true);
         expect(new Settings(storage).get("solidControlLabels")).toBe(true);
         new Settings(storage).set("solidControlLabels", false);
         expect(new Settings(storage).get("solidControlLabels")).toBe(false);
         expect(new Settings(fakeStorage({solidControlLabels: '"true"'}))
-            .get("solidControlLabels")).toBe(false);
+            .get("solidControlLabels")).toBe(true);
     });
 
     it("defaults both appearance preferences independently", () => {
