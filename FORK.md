@@ -6,7 +6,7 @@ never goes into a branch meant for upstream.
 
 - Upstream: https://github.com/hessius/XBRW (`upstream`, branch `develop`)
 - Fork: https://github.com/rhys100/XBRW (`origin`)
-- Base of this build: upstream `develop` at `584d1518` (8 Nov 2026 rebuild, after #297)
+- Base of this build: upstream `develop` at `45631160` (19 Nov 2026 merge, after #298 and #299)
 - The build before this one is kept at the tag `archive/ccc-main-2026-11-08` (`e0dce38`); before that `archive/ccc-main-2026-10-24` (`c0fd4b2`) and `archive/ccc-main-2026-10-23` (`5041763`)
 
 Each row says what the feature does, our pull request if there is one, what
@@ -24,7 +24,8 @@ Test files and docs are left out of the file lists.
 
 | Feature | What it does | Our PR | Upstream decision | ccc/main keeps ours | Files |
 |---|---|---|---|---|---|
-| Half-point ratios survive import (`fix/half-point-ratio-import`) | Import keeps xBloom's ratio (1:14.5) when the stages match it, instead of rounding it and refusing to brew. Saved rounded copies are repaired once. Also: Quick Edit steps a half-point ratio in halves, and a backup keeps a brew quick-edited away from one. | [#298](https://github.com/hessius/XBRW/pull/298) | Open, sent 8 Nov 2026 | Yes, merged | `library/recipeIdentity.ts`, `library/xbloomRecipeData.ts`, `library/XBloomRecipe.ts`, `library/halfPointRepair.ts`, `library/RecipeDatabase.ts`, `hooks/useRecipeLibrary.ts`, `library/backup.ts`, `components/QuickEditPanel.tsx`, `app/brew.tsx` |
+| Half-point ratios survive import (`fix/half-point-ratio-import`) | Import keeps xBloom's ratio (1:14.5) when the stages match it, instead of rounding it and refusing to brew. Saved rounded copies are repaired once. Also: Quick Edit steps a half-point ratio in halves, and a backup keeps a brew quick-edited away from one. | [#298](https://github.com/hessius/XBRW/pull/298) | Merged 12 Nov 2026 | Yes, upstream's copy | `library/recipeIdentity.ts`, `library/xbloomRecipeData.ts`, `library/XBloomRecipe.ts`, `library/halfPointRepair.ts`, `library/RecipeDatabase.ts`, `hooks/useRecipeLibrary.ts`, `library/backup.ts`, `components/QuickEditPanel.tsx`, `app/brew.tsx` |
+| Rail search opens the keyboard on the first tap (`fix/rail-search-autofocus`) | On Android the search field on a rail (roaster coffees, library, catalogue) took focus without a keyboard, so a second tap was needed. Android now also uses the native autoFocus. | [#301](https://github.com/hessius/XBRW/pull/301) | Open, sent 19 Nov 2026 | Yes, merged | `components/RailSearch.tsx` |
 
 ## Fork-only (never offered)
 
@@ -58,7 +59,7 @@ Left as upstream set them, on purpose:
 | Machine tools and settings (#284, #292): the Grind, Scale and Pour tools and the six setting editors | Gated by `controlCapabilities`; production profiles are empty, so no tool command is enabled. The #292 Machine Settings sheet (temperature and weight unit, brightness, water source) is shown when linked. | These write to a real machine and depend on his hardware qualification. Not ours to open. |
 | xBloom Collective built-in feed (our https://github.com/hessius/XBRW/pull/278, via #281) | Hidden unless `EXPO_PUBLIC_XBLOOM_FEED_URL` is set | The endpoint returned 404 on 8 Nov 2026 at both `xbrw.app` and `xbrwplusplus.vercel.app`, so there is nothing to turn on yet. Once it is deployed, this is a build variable. |
 | `showRecipeCardPhotos` | off | Not new in this round, and #277, #283 and #286 add no switch for it. Worth asking the owner: our pictures-by-default request was never taken. |
-| `beanconquerorHandoff` | off | Labs. Not something this round's work hides. |
+| `beanconquerorHandoff` | on | Upstream turned it on by default in #299; we follow. |
 | `machineAutoStart`, `machineConsoleAcknowledged` | off | Machine behaviour, left as he set it. |
 
 #277, #283, #286 and #290 add no other switches. #283's slot link, write chooser and roaster search are on for everyone.
